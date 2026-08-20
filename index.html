@@ -2314,52 +2314,82 @@ $$('.bleed[data-img]').forEach(function(fig){
 })();
 
 /* ═══ ЗЕРНО ПРОТИВ ПИКСЕЛЯ ═══
-   Отрисовка привязана к реальному размеру элемента и DPR:
-   при ×1 обе половины выглядят одинаково гладко, с зумом слева
-   проступает жёсткая сетка, справа — живое зерно. */
+   ОДИН И ТОТ ЖЕ кадр в обеих половинах: слева он собран жёсткой
+   пиксельной сеткой, справа — случайным зерном. Отрисовка привязана
+   к реальному размеру элемента и DPR; при ×1 стороны неотличимы,
+   с зумом слева проступает решётка, справа — живое зерно.
+   Источник — настоящий кадр коня (assets/seq/h2.jpg); если фото
+   не загрузилось, рисуется процедурная сцена — одинаковая слева и справа. */
 (function(){
   var cv=$('#grainCv');if(!cv)return;
   var ctx=cv.getContext('2d',{alpha:false});
   var range=$('#zoomR'),val=$('#zoomV');
   val.style.fontFamily='var(--sans)';val.style.fontVariantNumeric='tabular-nums';
   var W=0,H=0,HALF=0,DPR=1,truth=null,zoom=3,seed=1;
+  var photo=new Image(),photoOK=false;
+  photo.decoding='async';
+  photo.onload=function(){photoOK=true;W=0;if(size())render();};
+  photo.src='assets/seq/h2.jpg';
+  function drawSource(s,w,h){
+    if(photoOK){
+      /* cover-кроп фото в половину холста, со смещением к коню */
+      var iw=photo.naturalWidth,ih=photo.naturalHeight;
+      var sc=Math.max(w/iw,h/ih)*1.25;      /* лёгкий наезд — больше фактуры */
+      var sw=w/sc,sh=h/sc;
+      var sx=iw*.42-sw/2,sy=ih*.38-sh/2;    /* центр — корпус коня и луна */
+      sx=Math.max(0,Math.min(iw-sw,sx));sy=Math.max(0,Math.min(ih-sh,sy));
+      s.drawImage(photo,sx,sy,sw,sh,0,0,w,h);
+    }else{
+      var g=s.createLinearGradient(0,0,0,h);g.addColorStop(0,'#2a3446');g.addColorStop(1,'#080c14');
+      s.fillStyle=g;s.fillRect(0,0,w,h);
+      s.save();s.translate(w/2,h/2);s.rotate(-.36);
+      s.fillStyle='#e8e2d8';s.fillRect(-w,-h*.045,w*2,h*.09);s.restore();
+      s.beginPath();s.arc(w*.3,h*.3,w*.13,0,6.29);s.fillStyle='#c8703f';s.fill();
+      for(var i=0;i<40;i++){var x=w*(.2+i*.016),w2=Math.max(w*.001,w*(.008-i*.00017));
+        s.fillStyle='rgba(240,235,226,.9)';s.fillRect(x,h*.62,w2,h*.3);}
+    }
+  }
   function size(){
     DPR=Math.min(devicePixelRatio||1,3);
     var r=cv.getBoundingClientRect();
     var w=Math.max(2,Math.round(r.width*DPR));
     if(w===W&&truth)return false;
-    W=cv.width=w;H=cv.height=Math.round(w*460/1200);HALF=W/2;
-    var src=document.createElement('canvas');src.width=W;src.height=H;
+    W=cv.width=w;H=cv.height=Math.round(w*460/1200);HALF=Math.floor(W/2);
+    var src=document.createElement('canvas');src.width=HALF;src.height=H;
     var s=src.getContext('2d');
-    var g=s.createLinearGradient(0,0,0,H);g.addColorStop(0,'#2a3446');g.addColorStop(1,'#080c14');
-    s.fillStyle=g;s.fillRect(0,0,W,H);
-    s.save();s.translate(W/2,H/2);s.rotate(-.36);
-    s.fillStyle='#e8e2d8';s.fillRect(-W,-H*.028,W*2,H*.057);s.restore();
-    s.beginPath();s.arc(W*.26,H*.3,W*.065,0,6.29);s.fillStyle='#c8703f';s.fill();
-    for(var i=0;i<70;i++){var x=W*(.62+i*.00617),w2=Math.max(W*.0005,W*(.00433-i*.0000517));
-      s.fillStyle='rgba(240,235,226,.9)';s.fillRect(x,H*.54,w2,H*.42);}
-    truth=s.getImageData(0,0,W,H).data;
+    drawSource(s,HALF,H);
+    try{truth=s.getImageData(0,0,HALF,H).data;}catch(e){truth=null;}
     return true;
   }
-  function at(x,y){x=x|0;y=y|0;if(x<0)x=0;if(y<0)y=0;if(x>=W)x=W-1;if(y>=H)y=H-1;
-    var i=(y*W+x)*4;return [truth[i],truth[i+1],truth[i+2]];}
+  function at(x,y){x=x|0;y=y|0;if(x<0)x=0;if(y<0)y=0;if(x>=HALF)x=HALF-1;if(y>=H)y=H-1;
+    var i=(y*HALF+x)*4;return [truth[i],truth[i+1],truth[i+2]];}
   function render(){
     if(!truth)return;
-    /* клетка в CSS-пикселях: ×1 ≈ незаметна, ×10 — крупные блоки */
-    var cell=Math.max(1,(0.9+(zoom-1)*1.55)*DPR);
+    /* сетка: при ×1 пиксель-в-пиксель (стороны неотличимы), ×10 — крупные блоки */
+    var cell=Math.max(1,(zoom-1)*1.65*DPR);
     ctx.fillStyle='#04070d';ctx.fillRect(0,0,W,H);
-    for(var y=0;y<H;y+=cell)for(var x=0;x<HALF;x+=cell){
-      var c=at(x+cell/2,y+cell/2);ctx.fillStyle='rgb('+c[0]+','+c[1]+','+c[2]+')';
-      ctx.fillRect(x,y,Math.ceil(cell),Math.ceil(cell));}
-    var n=Math.round(HALF*H/(cell*cell)*2.6),r=seed;
+    /* ЛЕВО: тот же кадр через жёсткую сетку */
+    if(cell<=1){
+      var im=new ImageData(new Uint8ClampedArray(truth),HALF,H);
+      ctx.putImageData(im,0,0);
+    }else{
+      for(var y=0;y<H;y+=cell)for(var x=0;x<HALF;x+=cell){
+        var c=at(x+cell/2,y+cell/2);ctx.fillStyle='rgb('+c[0]+','+c[1]+','+c[2]+')';
+        ctx.fillRect(x,y,Math.ceil(cell),Math.ceil(cell));}
+    }
+    /* ПРАВО: тот же кадр случайным зерном; у зерна есть физический размер,
+       поэтому даже при ×1 плёнка чуть «дышит» — это и есть фактура */
+    var gcell=Math.max(cell,1.5*DPR);
+    var n=Math.round(HALF*H/(gcell*gcell)*3.6),r=seed;
     function rnd(){r=(r*1664525+1013904223)%4294967296;return r/4294967296;}
-    ctx.fillStyle='#070b12';ctx.fillRect(HALF,0,HALF,H);
+    /* подложка справа — тот же кадр, приглушённый: просветы между
+       зёрнами читаются как тень, а не как чёрные дыры */
+    ctx.putImageData(new ImageData(new Uint8ClampedArray(truth),HALF,H),HALF,0);
+    ctx.fillStyle='rgba(5,8,14,.32)';ctx.fillRect(HALF,0,W-HALF,H);
     for(var k=0;k<n;k++){
-      var gx=HALF+rnd()*HALF,gy=rnd()*H,c2=at(gx,gy);
-      var lum=(c2[0]*.299+c2[1]*.587+c2[2]*.114)/255;
-      if(rnd()>lum*1.06)continue;
+      var gx=rnd()*HALF,gy=rnd()*H,c2=at(gx,gy);
       ctx.fillStyle='rgb('+c2[0]+','+c2[1]+','+c2[2]+')';
-      ctx.beginPath();ctx.arc(gx,gy,cell*(.3+rnd()*.42),0,6.29);ctx.fill();}
+      ctx.beginPath();ctx.arc(HALF+gx,gy,gcell*(.34+rnd()*.44),0,6.29);ctx.fill();}
     ctx.fillStyle='rgba(240,235,226,.22)';ctx.fillRect(HALF-1,0,2,H);
   }
   function setZ(v){zoom=+v;val.textContent='×'+(+v).toFixed(0);render();}
