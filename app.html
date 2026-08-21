@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Закон Зевса · короткий маршрут</title>
+<meta name="description" content="Главные идеи «Одиссеи» Нолана за пять минут: восемь остановок, испытания и достижения.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@300..800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0a0f18;--abyss:#05080e;--paper:#f0ebe2;--accent:#c8703f;--bronze:#b8912f;
+  --wine:#7a2f3d;--sea:#4f96cf;--line:rgba(240,235,226,.11);
+  --serif:'Cormorant Garamond',Georgia,serif;--sans:'Manrope',-apple-system,system-ui,sans-serif;
+  --sb:env(safe-area-inset-bottom,0px);--st:env(safe-area-inset-top,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--abyss);color:var(--paper);font-family:var(--sans);
+  font-size:clamp(16px,1.05vw,18px);line-height:1.66;overflow-x:clip;
+  -webkit-font-smoothing:antialiased;min-height:100svh}
+img{max-width:100%;display:block}
+button{font-family:inherit;cursor:pointer}
+a{color:var(--sea)}
+
+/* ── шапка ── */
+#top{position:fixed;inset:0 0 auto;z-index:40;display:flex;align-items:center;gap:12px;
+  padding:calc(10px + var(--st)) 16px 10px;background:linear-gradient(180deg,rgba(5,8,14,.92),rgba(5,8,14,.72) 70%,transparent);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#top .logo{font-family:var(--serif);font-size:19px;letter-spacing:.04em;white-space:nowrap}
+#top .logo i{font-style:italic;color:var(--accent)}
+#dots{flex:1;display:flex;gap:5px;justify-content:center}
+#dots i{width:14px;height:3px;border-radius:2px;background:rgba(240,235,226,.16);transition:background .3s}
+#dots i.on{background:var(--accent)}
+#achBtn{background:none;border:1px solid var(--line);border-radius:20px;color:var(--paper);
+  padding:5px 12px;font-size:13px;font-weight:700;letter-spacing:.04em;white-space:nowrap}
+#achBtn b{color:var(--bronze)}
+
+/* ── сцена ── */
+#stage{max-width:640px;margin:0 auto;padding:calc(72px + var(--st)) 20px calc(96px + var(--sb))}
+.scr{display:none;animation:in .5s cubic-bezier(.22,.68,.24,1)}
+.scr.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.kick{font-size:11px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.scr h1{font-family:var(--serif);font-weight:600;font-size:clamp(30px,7.4vw,44px);line-height:1.08;margin-bottom:16px}
+.scr h1 em{font-style:italic;color:var(--accent)}
+.scr p{margin-bottom:14px;color:rgba(240,235,226,.88)}
+.scr p b{color:var(--paper)}
+.scr .big{font-family:var(--serif);font-size:clamp(20px,4.6vw,26px);line-height:1.3;font-style:italic;color:var(--paper)}
+.pic{margin:18px 0;border-radius:14px;overflow:hidden;position:relative;border:1px solid var(--line)}
+.pic img{width:100%;aspect-ratio:16/8.4;object-fit:cover;filter:saturate(.82) brightness(.94)}
+.pic .cap{position:absolute;left:0;right:0;bottom:0;padding:22px 14px 8px;font-size:11px;letter-spacing:.08em;
+  color:rgba(240,235,226,.75);background:linear-gradient(0deg,rgba(5,8,14,.85),transparent)}
+.note{border-left:2px solid var(--bronze);padding:6px 0 6px 14px;font-size:14.5px;color:rgba(240,235,226,.75);margin:16px 0}
+.spoil{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--wine);border:1px solid rgba(122,47,61,.6);border-radius:4px;padding:2px 7px;margin-bottom:10px}
+
+/* ── низ: кнопки ── */
+#nav{position:fixed;inset:auto 0 0;z-index:40;display:flex;gap:10px;justify-content:center;align-items:center;
+  padding:12px 20px calc(14px + var(--sb));background:linear-gradient(0deg,rgba(5,8,14,.94),rgba(5,8,14,.7) 60%,transparent)}
+.btn{border:none;border-radius:12px;padding:13px 26px;font-size:15px;font-weight:800;letter-spacing:.03em;
+  background:var(--accent);color:#120a06;transition:transform .15s}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:none;color:rgba(240,235,226,.72);border:1px solid var(--line);font-weight:600}
+.btn.small{padding:9px 16px;font-size:13.5px}
+.quest{margin:18px 0 4px;width:100%;text-align:left;background:rgba(184,145,47,.07);border:1px solid rgba(184,145,47,.4);
+  border-radius:12px;padding:13px 16px;color:var(--paper);font-size:14.5px;line-height:1.4}
+.quest b{color:var(--bronze);display:block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:3px}
+.quest.done{border-color:rgba(184,145,47,.9)}
+.quest.done b::after{content:' · пройдено ✓'}
+
+/* ── квиз ── */
+#quiz{position:fixed;inset:0;z-index:60;background:rgba(4,6,10,.9);backdrop-filter:blur(8px);
+  display:none;align-items:flex-end;justify-content:center}
+#quiz.on{display:flex}
+#quiz .box{background:var(--ink);border:1px solid var(--line);border-radius:18px 18px 0 0;max-width:560px;width:100%;
+  padding:22px 20px calc(22px + var(--sb));animation:up .35s cubic-bezier(.22,.68,.24,1)}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+#quiz .qk{font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--bronze);margin-bottom:8px}
+#quiz .qq{font-family:var(--serif);font-size:21px;line-height:1.25;margin-bottom:16px}
+#quiz .opt{display:block;width:100%;text-align:left;margin:8px 0;padding:12px 14px;border-radius:10px;
+  border:1px solid var(--line);background:rgba(240,235,226,.04);color:var(--paper);font-size:14.5px;line-height:1.35}
+#quiz .opt.right{border-color:#4d8f5f;background:rgba(77,143,95,.15)}
+#quiz .opt.wrong{border-color:var(--wine);background:rgba(122,47,61,.18)}
+#quiz .ex{font-size:13.5px;color:rgba(240,235,226,.7);margin-top:10px;display:none}
+#quiz .ex.on{display:block}
+#quiz .row{display:flex;justify-content:space-between;align-items:center;margin-top:16px}
+#quiz .prog{font-size:12px;color:rgba(240,235,226,.5)}
+
+/* ── ачивки ── */
+#toast{position:fixed;left:50%;top:calc(64px + var(--st));transform:translate(-50%,-30px);z-index:70;
+  background:var(--ink);border:1px solid rgba(184,145,47,.7);border-radius:14px;padding:12px 18px;
+  display:flex;gap:12px;align-items:center;opacity:0;pointer-events:none;transition:all .45s cubic-bezier(.22,.68,.24,1);
+  box-shadow:0 10px 40px rgba(0,0,0,.6);max-width:92vw}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+#toast .ico{font-size:26px}
+#toast .tt{font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--bronze)}
+#toast .tn{font-family:var(--serif);font-size:19px;line-height:1.1}
+#apanel{position:fixed;inset:0;z-index:60;background:rgba(4,6,10,.9);backdrop-filter:blur(8px);display:none;
+  align-items:center;justify-content:center;padding:20px}
+#apanel.on{display:flex}
+#apanel .box{background:var(--ink);border:1px solid var(--line);border-radius:18px;max-width:480px;width:100%;padding:24px 22px}
+#apanel h3{font-family:var(--serif);font-size:26px;margin-bottom:14px}
+.arow{display:flex;gap:14px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.arow .ico{font-size:24px;width:34px;text-align:center;filter:grayscale(1);opacity:.35}
+.arow.got .ico{filter:none;opacity:1}
+.arow .n{font-weight:700;font-size:15px}
+.arow .d{font-size:12.5px;color:rgba(240,235,226,.6)}
+.arow.got .n{color:var(--bronze)}
+
+/* финал: выбор */
+.choice{display:block;width:100%;text-align:left;margin:8px 0;padding:13px 15px;border-radius:11px;
+  border:1px solid var(--line);background:rgba(240,235,226,.04);color:var(--paper);font-size:14.5px;line-height:1.4}
+.choice b{display:block;font-size:15px}
+.choice span{color:rgba(240,235,226,.65);font-size:13.5px}
+.choice.pick{border-color:var(--accent)}
+.film-ans{display:none;margin-top:14px}
+.film-ans.on{display:block;animation:in .5s}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<header id="top">
+  <div class="logo">Закон <i>Зевса</i></div>
+  <div id="dots" aria-hidden="true"></div>
+  <button id="achBtn" aria-label="Достижения">🏆 <b id="achN">0</b>/5</button>
+</header>
+
+<main id="stage"></main>
+
+<nav id="nav">
+  <button class="btn ghost small" id="backB" style="display:none">Назад</button>
+  <button class="btn" id="nextB">Начать путь</button>
+</nav>
+
+<div id="toast" role="status"><div class="ico">🏆</div><div><div class="tt">Достижение</div><div class="tn" id="toastN"></div></div></div>
+
+<div id="apanel" role="dialog" aria-label="Достижения"><div class="box">
+  <h3>Достижения</h3>
+  <div id="alist"></div>
+  <div style="display:flex;justify-content:flex-end;margin-top:16px"><button class="btn small ghost" id="apClose">Закрыть</button></div>
+</div></div>
+
+<div id="quiz"><div class="box">
+  <div class="qk" id="qk"></div>
+  <div class="qq" id="qq"></div>
+  <div id="qopts"></div>
+  <div class="ex" id="qex"></div>
+  <div class="row"><span class="prog" id="qprog"></span><button class="btn small" id="qnext" style="display:none">Дальше</button></div>
+</div></div>
+
+<script>
+(function(){
+'use strict';
+var $=function(s){return document.querySelector(s)};
+
+/* ═══ данные ═══ */
+var ACH=[
+ {k:'route', ico:'🐎', n:'Закон Зевса', d:'Короткий маршрут пройден — восемь остановок'},
+ {k:'proto', ico:'🚪', n:'Знаток протокола', d:'Испытание «Гость у порога» — 3 из 3'},
+ {k:'noise', ico:'🌊', n:'Фильтр шума', d:'Испытание «Про фильм или нет» — 3 из 3'},
+ {k:'word',  ico:'📜', n:'Пятое слово', d:'Испытание «Первая строка» — 3 из 3'},
+ {k:'deep',  ico:'⚓', n:'Вглубь', d:'Открыт полный разбор на 24 песни'}
+];
+var QUESTS={
+ proto:{k:'proto',title:'Гость у порога',qs:[
+  {q:'Какой шаг приёма гостя Полифем делает первым — и этим сразу выдаёт себя?',
+   o:['Подаёт еду','Спрашивает имя','Предлагает ночлег','Дарит подарок'],a:1,
+   ex:'У феаков имя спрашивают только в восьмой песни, когда гость вымыт и накормлен. Циклоп начинает с допроса — и это уже приговор.'},
+  {q:'Полифем «дарит» гостю дар. Какой?',
+   o:['Вершину горы','Овечий сыр','«Съем тебя последним»','Кубок вина'],a:2,
+   ex:'Самая холодная шутка в европейской литературе: форма протокола соблюдена, содержание вывернуто наизнанку.'},
+  {q:'А кто ломает протокол с другой стороны — со стороны гостя?',
+   o:['Сирены','Женихи','Феаки','Эвмей'],a:1,
+   ex:'Сто восемь человек, которые «в гостях» — годами. Формально ничего не крадут. В этом и ужас.'}]},
+ noise:{k:'noise',title:'Про фильм или нет',qs:[
+  {q:'Серьги Зендеи на премьере оказались не греческими, а иранскими. Это претензия к фильму?',
+   o:['Про фильм','Не про фильм'],a:1,
+   ex:'Вопрос, как древности попадают в западные коллекции, серьёзный — но к самому фильму отношения не имеет.'},
+  {q:'Шлем Агамемнона выглядит как маска Дарта Вейдера. Это про фильм?',
+   o:['Про фильм','Не про фильм'],a:0,
+   ex:'Да — это осознанное решение режиссёра: власть показана не лицом, а глухой маской. Можно спорить, работает ли приём.'},
+  {q:'Оценки критиков и зрителей на агрегаторах резко расходятся. Про фильм?',
+   o:['Про фильм','Не про фильм'],a:1,
+   ex:'Это разговор о том, как устроены агрегаторы и кто на них голосует, — а не о том, хороший ли фильм.'}]},
+ word:{k:'word',title:'Первая строка',qs:[
+  {q:'Пятое слово поэмы — πολύτροπος, «много-поворотный». Как его перевёл Жуковский?',
+   o:['«хитроумный»','«многоопытный»','«непростой»','«многострадальный»'],a:1,
+   ex:'«Многоопытный» — то есть с человеком много всего было. Не он делал — с ним случалось. Русскому читателю достался именно такой Одиссей.'},
+  {q:'Нолан взял формулу героя из перевода Эмили Уилсон: «расскажи мне о непростом человеке». Как называется её рецензия на фильм?',
+   o:['A Complicated Film','An Uncomplicated Man','The Man of Twists','Не писала рецензии'],a:1,
+   ex:'Режиссёр взял у переводчицы формулу героя — переводчица приставила к ней отрицательную приставку и вернула обратно.'},
+  {q:'Чего у гомеровских сирен точно НЕ было?',
+   o:['Голоса','Знания о Троянской войне','Рыбьего хвоста','Луга с костями'],a:2,
+   ex:'Хвост сиренам приделало Средневековье. У Гомера о внешности — ни слова: они соблазняют не телом, а знанием.'}]}
+};
+
+var STEPS=[
+ {kick:'Короткий маршрут', h:'Закон <em>Зевса</em>',
+  body:'<p class="big">«Мы предали всё, что свято между людьми».</p>'+
+   '<p>Это реплика Одиссея из «Одиссеи» Нолана — и ключ ко всему фильму. Впереди восемь остановок: главные идеи трёхчасового фильма и поэмы, которой три тысячи лет, — минут за пять.</p>'+
+   '<p>По дороге будут испытания — они не обязательны, но за них дают достижения. Спойлерные места помечены.</p>',
+  img:'assets/bg/citadel-wide-B.png', cap:'Цитадель у моря · иллюстрация создана ИИ'},
+ {kick:'Остановка 1 · не с той стороны', h:'Вы знаете эту историю. Скорее всего — <em>не с той стороны</em>',
+  body:'<p>За историей про возвращение домой прячется <b>суд</b>. Судят человека, который нарушил единственное правило, на котором держался весь древний мир.</p>'+
+   '<p>Спор о фильме умещается в одно слово — пятое слово поэмы, πολύτροπος, «много-поворотный». Если Одиссей поворачивает сам — он хитрец, который всё подстроил. Если поворачивают его — бедолага, которого двадцать лет мотало по свету. Об этом спорят две с половиной тысячи лет, и у первой строки до сих пор нет одного верного прочтения.</p>',
+  img:'assets/seq/h1.jpg', cap:'Дар на пустом берегу', quest:'word', questT:'Испытание · Первая строка'},
+ {kick:'Остановка 2 · одно правило', h:'Правило, на котором <em>держалось всё</em>',
+  body:'<p>Представьте мир без государств, полиции и документов. Вы подходите к чужому дому в чужой земле — и никто не накажет хозяина, если он вас убьёт. Как вообще возможны путешествия и торговля?</p>'+
+   '<p>Ответ грека: есть <b>ксения</b> — не вежливость, а обязанность перед верховным богом. Зевс носил прозвище Ксений, покровитель странников: под лохмотьями нищего у порога мог оказаться он сам. В фильме этот кодекс назван прямо — <b>закон Зевса</b>.</p>'+
+   '<p>Держалось всё на подарке: между чужими это единственное доказательство, что гость не враг. Условие одно, и оно негласное: <b>дар не подделывают</b>.</p>'},
+ {kick:'Остановка 3 · протокол', h:'Приём гостя — это <em>24 шага</em>',
+  body:'<p>Гостеприимство в поэме — не настроение, а формула: шаги, повторяющиеся почти дословно. Человека видно по тому, <b>какие шаги он пропустил</b>.</p>'+
+   '<p>Ключевой — тринадцатый: «кто ты?». У феаков имя спрашивают, когда гость уже вымыт, одет и накормлен. Циклоп Полифем спрашивает его первым, до всего. Один и тот же вопрос в разное время — это разница между цивилизацией и людоедством.</p>'+
+   '<p>А целиком, ничего не пропустив, протокол выполняет только свинопас Эвмей — самый бедный человек в поэме. Он режет для гостя собственного поросёнка.</p>',
+  quest:'proto', questT:'Испытание · Гость у порога'},
+ {kick:'Остановка 4 · переход черты', h:'Конь — не хитрость. Это <em>подделанный дар</em>',
+  body:'<p>Троянский конь, которым принято восхищаться со школы, — это дар, оставленный на берегу. Принять дар — обязанность; отвергнуть — оскорбление. Троянцы вносят его в город, потому что <b>дар нельзя не принять</b>.</p>'+
+   '<p>Но дар оказался полым. Греки взяли единственное доказательство того, что чужак не враг, — и превратили его в ложь. После такого доверие к дару не восстанавливается ни для кого. Это не военная хитрость. Это <b>святотатство</b>.</p>'+
+   '<p>Вот почему фильм начинается не с победы, а с обломка: конь, вросший в песок. Памятник, который сразу показан руиной.</p>',
+  img:'assets/seq/h2.jpg', cap:'Дар тёмный · бронзовая кромка по гребню'},
+ {kick:'Остановка 5 · зеркало', h:'Человек слушает <em>песню о себе</em>',
+  body:'<p>Восьмая песнь: на пиру у феаков слепой певец поёт о взятии Трои — а среди слушателей, никем не узнанный, сидит сам Одиссей. Он сам заказал эту песню: про своё величайшее изобретение. И песня его уничтожает: он накрывается плащом и плачет.</p>'+
+   '<p>Гомер сравнивает его — разорителя городов — с женщиной, которую уводят в рабство из разорённого города. Победитель приравнен к собственной жертве, одним сравнением, без единого слова осуждения.</p>'+
+   '<p>Фильм Нолана — та же песня, спетая нам: о нашей цивилизации, о том, чем она гордится и чем расплатилась. И зал реагирует как Одиссей: кто-то накрывается плащом, кто-то требует остановить певца.</p>'},
+ {kick:'Остановка 6 · сирены', h:'Сирены поют <em>о вас</em> — и это работает',
+  body:'<p>У Гомера сирены — не полурыбы (хвост им приделало Средневековье). Они обещают <b>знание</b>: спой тебе песню о тебе самом — уйдёшь, зная больше. А вокруг — луг и куча костей.</p>'+
+   '<p>Спор вокруг фильма устроен так же: голоса поют о том, что вы только что смотрели, и льстят слушателю. Одиссей прошёл этот участок единственным способом — привязал себя к мачте, чтобы <b>слышать всё и не свернуть</b>.</p>'+
+   '<p>Это и есть инструкция по критике: не затыкать уши и не бросаться за борт. Из одиннадцати самых громких претензий к фильму о самом фильме — четыре.</p>',
+  quest:'noise', questT:'Испытание · Про фильм или нет'},
+ {kick:'Остановка 7 · Тринити', h:'Конь — это <em>Тринити</em> «Одиссеи»',
+  body:'<p>«Оппенгеймер» и «Одиссея» — один разговор, разложенный на два фильма. Ход, придуманный самым умным человеком в кадре; ход, который срабатывает идеально; ход, после которого прежнего мира больше нет.</p>'+
+   '<p>Чтобы закончить цивилизацию, сегодня есть <b>12 241 боеголовка</b>. А тогда хватило <b>одного подделанного дара</b>, чтобы сломать правило, на котором держалось доверие между чужими.</p>'+
+   '<p>Цивилизацию убивает не мощность. Её убивает момент, когда кто-то очень умный решает, что правило можно обойти один раз — ради своих, ради победы. Дальше оно не работает уже ни для кого: Одиссей десять лет стучится в чужие двери, завися от закона, который сам сломал. Это не кара свыше — это арифметика.</p>',
+  img:'assets/seq/s6.jpg', cap:'Шляпка на тропопаузе · иллюстрация создана ИИ'},
+ {kick:'Остановка 8 · кровать', h:'Знак, который знают <em>только двое</em>', spoiler:true,
+  body:'<p>Финал поэмы: Пенелопа не бросается мужу на шею — она его испытывает. Велит вынести из спальни кровать. И он взрывается: столб этой кровати — живая маслина, вросшая в землю; сдвинуть её нельзя, не убив дерево.</p>'+
+   '<p>Она проверяла не память — <b>гнев</b>. Подделать можно шрам и рассказ; нельзя подделать ярость человека, у которого трогают единственное, что он строил своими руками.</p>'+
+   '<p>Кровать — единственный неподвижный предмет в поэме, где двадцать лет всё движется. Брак, описанный как дерево, вросшее в землю.</p>'},
+ {kick:'Финал', h:'Если закона Зевса больше нет — <em>что нас объединит?</em>',
+  body:'<p>Древних держал вместе страх перед богом, который мог оказаться нищим у порога. Бога сняли с должности несколько веков назад, а замену так и не назначили. Кажется, ради этого вопроса фильм и снимался. Выберите свой ответ:</p>'+
+   '<div id="choices">'+
+   '<button class="choice" data-c="0"><b>Право и договоры</b><span>суды, конвенции, санкции — формальные правила вместо божественного гаранта</span></button>'+
+   '<button class="choice" data-c="1"><b>Общий страх</b><span>климат, эпидемии, те самые двенадцать тысяч боеголовок</span></button>'+
+   '<button class="choice" data-c="2"><b>Взаимная выгода</b><span>воевать невыгодно, когда всё общее — от микросхем до логистики</span></button>'+
+   '<button class="choice" data-c="3"><b>Память об умерших</b><span>почести мёртвым — включая чужих — как единственное, что признают обе стороны</span></button>'+
+   '</div>'+
+   '<div class="film-ans" id="filmAns"><p class="big">Фильм выбирает память.</p>'+
+   '<p>Его финал отправляет героя отдавать почести мёртвым — и рифмуется с разговором в самом начале. Гомер предлагал забыть, чтобы остановиться. Нолан предлагает <b>помнить, чтобы остановиться</b>. Второе труднее — и, кажется, честнее.</p>'+
+   '<p>Маршрут пройден. Теперь у вас есть карта — а полный разбор раскрывает каждую остановку: рельс на двадцать четыре песни, протокол за шестерых хозяев, шестнадцать голосов критики у мачты, зерно против пикселя и карту скитаний.</p>'+
+   '<p style="margin-top:14px"><a class="btn" id="deepLink" style="display:inline-block;text-decoration:none" href="index.html">Открыть полный разбор →</a></p></div>'}
+];
+
+/* ═══ состояние ═══ */
+var got={}; try{got=JSON.parse(localStorage.getItem('zz-ach')||'{}')}catch(e){}
+var step=0; try{step=Math.min(+((localStorage.getItem('zz-step'))||0)||0,STEPS.length-1)}catch(e){}
+var qdone={}; try{qdone=JSON.parse(localStorage.getItem('zz-quests')||'{}')}catch(e){}
+function save(){try{localStorage.setItem('zz-ach',JSON.stringify(got));
+  localStorage.setItem('zz-step',String(step));
+  localStorage.setItem('zz-quests',JSON.stringify(qdone));}catch(e){}}
+
+/* ═══ ачивки ═══ */
+function achCount(){var n=0;ACH.forEach(function(a){if(got[a.k])n++});return n}
+function refreshAch(){$('#achN').textContent=achCount()}
+var toastT=null;
+function award(k){
+  if(got[k])return;
+  got[k]=Date.now();save();refreshAch();
+  var a=ACH.filter(function(x){return x.k===k})[0];
+  $('#toastN').textContent=a.ico+' '+a.n;
+  var t=$('#toast');t.classList.add('on');
+  clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove('on')},3600);
+}
+function renderAList(){
+  var h='';ACH.forEach(function(a){
+    h+='<div class="arow'+(got[a.k]?' got':'')+'"><div class="ico">'+a.ico+'</div><div><div class="n">'+a.n+'</div><div class="d">'+a.d+'</div></div></div>';
+  });$('#alist').innerHTML=h;
+}
+$('#achBtn').addEventListener('click',function(){renderAList();$('#apanel').classList.add('on')});
+$('#apClose').addEventListener('click',function(){$('#apanel').classList.remove('on')});
+$('#apanel').addEventListener('click',function(e){if(e.target.id==='apanel')$('#apanel').classList.remove('on')});
+
+/* ═══ квиз ═══ */
+var Q=null,qi=0,qok=0;
+function openQuest(key){
+  Q=QUESTS[key];qi=0;qok=0;$('#quiz').classList.add('on');showQ();
+}
+function showQ(){
+  var q=Q.qs[qi];
+  $('#qk').textContent=Q.title;
+  $('#qq').textContent=q.q;
+  $('#qprog').textContent=(qi+1)+' / '+Q.qs.length;
+  $('#qex').className='ex';$('#qex').textContent='';
+  $('#qnext').style.display='none';
+  var box=$('#qopts');box.innerHTML='';
+  q.o.forEach(function(t,i){
+    var b=document.createElement('button');b.className='opt';b.textContent=t;
+    b.addEventListener('click',function(){
+      if(box.dataset.lock)return;box.dataset.lock='1';
+      if(i===q.a){b.classList.add('right');qok++}
+      else{b.classList.add('wrong');box.children[q.a].classList.add('right')}
+      $('#qex').textContent=q.ex;$('#qex').className='ex on';
+      $('#qnext').style.display='inline-block';
+      $('#qnext').textContent = qi<Q.qs.length-1 ? 'Дальше' : 'Готово';
+    });
+    box.appendChild(b);
+  });
+  delete box.dataset.lock;
+}
+$('#qnext').addEventListener('click',function(){
+  if(qi<Q.qs.length-1){qi++;showQ();return}
+  $('#quiz').classList.remove('on');
+  if(qok===Q.qs.length){qdone[Q.k]=1;save();award(Q.k);render();}
+  else{
+    $('#toastN').textContent='Верно '+qok+' из '+Q.qs.length+' — попробуйте ещё раз';
+    var t=$('#toast');t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove('on')},2800);
+  }
+});
+$('#quiz').addEventListener('click',function(e){if(e.target.id==='quiz')$('#quiz').classList.remove('on')});
+
+/* ═══ экраны ═══ */
+var dots=$('#dots');
+STEPS.forEach(function(){dots.appendChild(document.createElement('i'))});
+function render(){
+  var s=STEPS[step],st=$('#stage');
+  var h='<section class="scr on">';
+  h+='<div class="kick">'+s.kick+'</div>';
+  if(s.spoiler)h+='<span class="spoil">лёгкий спойлер финала поэмы</span>';
+  h+='<h1>'+s.h+'</h1>'+s.body;
+  if(s.img)h+='<div class="pic"><img src="'+s.img+'" alt="" loading="lazy"><div class="cap">'+(s.cap||'')+'</div></div>';
+  if(s.quest){
+    h+='<button class="quest'+(qdone[s.quest]?' done':'')+'" data-q="'+s.quest+'"><b>'+s.questT+'</b>Три вопроса · достижение за 3 из 3 · необязательно</button>';
+  }
+  h+='</section>';
+  st.innerHTML=h;
+  [].forEach.call(dots.children,function(d,i){d.classList.toggle('on',i<=step)});
+  $('#backB').style.display=step>0?'inline-block':'none';
+  $('#nextB').textContent = step===0?'Начать путь':(step===STEPS.length-1?'Пройти заново':'Дальше →');
+  var qb=st.querySelector('.quest');
+  if(qb)qb.addEventListener('click',function(){openQuest(qb.dataset.q)});
+  var ch=st.querySelector('#choices');
+  if(ch){
+    [].forEach.call(ch.querySelectorAll('.choice'),function(b){
+      b.addEventListener('click',function(){
+        [].forEach.call(ch.querySelectorAll('.choice'),function(x){x.classList.remove('pick')});
+        b.classList.add('pick');
+        $('#filmAns').classList.add('on');
+        award('route');
+      });
+    });
+    var dl=st.querySelector('#deepLink');
+    if(dl)dl.addEventListener('click',function(){award('deep');save()});
+  }
+  window.scrollTo({top:0,behavior:'auto'});
+  save();
+}
+$('#nextB').addEventListener('click',function(){
+  if(step===STEPS.length-1){step=0;render();return}
+  step++;render();
+});
+$('#backB').addEventListener('click',function(){if(step>0){step--;render()}});
+refreshAch();render();
+})();
+</script>
+</body>
+</html>
