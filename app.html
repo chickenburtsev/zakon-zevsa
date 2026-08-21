@@ -593,13 +593,28 @@ function scrubUpd(){
   scrubs.forEach(function(o){
     if(!o.dur||!o.v.isConnected)return;
     var r=o.v.getBoundingClientRect();
-    if(r.bottom<-300||r.top>innerHeight+300)return;
-    var p=(innerHeight-r.top)/(innerHeight+r.height);
+    if(r.bottom<-300||r.top>innerHeight+300){o.tgt=null;return}
+    /* видео доигрывает, пока блок ещё виден: конец — когда верх блока
+       поднялся к ~45% экрана, а не при полном уходе за кадр */
+    var p=(innerHeight-r.top)/(innerHeight*.55+r.height);
     p=Math.max(0,Math.min(1,p));
-    var w=p*Math.max(0,o.dur-0.05);
-    if(Math.abs(w-o.at)>0.02){o.at=w;try{o.v.currentTime=w}catch(e){}}
+    o.tgt=p*Math.max(0,o.dur-0.05);
   });
 }
+/* плавная перемотка: время догоняет цель, а не прыгает — скролл не стробит */
+(function tickScrub(){
+  scrubs.forEach(function(o){
+    if(!o.dur||o.tgt==null)return;
+    var cur=o.at<0?o.tgt:o.at;
+    var d=o.tgt-cur;
+    if(Math.abs(d)>0.03){
+      cur+=d*0.14;
+      o.at=cur;
+      try{o.v.currentTime=cur}catch(e){}
+    }
+  });
+  requestAnimationFrame(tickScrub);
+})();
 
 plRanges();plUpd();spy();scrubUpd();
 addEventListener('resize',function(){plRanges();plUpd();scrubUpd()},{passive:true});
