@@ -114,6 +114,7 @@ main{display:block}
 .sec .big{font-family:var(--serif);font-size:clamp(20px,4.6vw,26px);line-height:1.3;font-style:italic;color:var(--paper)}
 .med{margin:20px 0;border-radius:14px;overflow:hidden;position:relative;border:1px solid var(--line);background:#04070c}
 .med img,.med video{width:100%;aspect-ratio:16/9;object-fit:cover;filter:saturate(.84) brightness(.95)}
+.med.sq img,.med.sq video{aspect-ratio:1/1;max-height:74svh;object-fit:cover}
 .med .cap{position:absolute;left:0;right:0;bottom:0;padding:24px 14px 8px;font-size:11px;letter-spacing:.08em;
   color:rgba(240,235,226,.78);background:linear-gradient(0deg,rgba(5,8,14,.85),transparent);pointer-events:none}
 .spoil{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
@@ -306,7 +307,11 @@ var qdone={};try{qdone=JSON.parse(localStorage.getItem('zz-quests')||'{}')}catch
 function save(){try{localStorage.setItem('zz-ach',JSON.stringify(got));localStorage.setItem('zz-quests',JSON.stringify(qdone))}catch(e){}}
 
 /* ═══ разметка секций ═══ */
-function med(video,img,cap){
+function med(video,img,cap,mode){
+  if(mode==='scrub'){
+    return '<div class="med sq"><video class="scrubv" muted playsinline preload="metadata" poster="'+img+'" src="'+video+'"></video>'+
+    (cap?'<div class="cap">'+cap+'</div>':'')+'</div>';
+  }
   return '<div class="med">'+(video?'<video muted loop playsinline autoplay preload="metadata" poster="'+img+'"><source src="'+video+'" type="video/mp4"></video>':'<img src="'+img+'" alt="" loading="lazy">')+
   (cap?'<div class="cap">'+cap+'</div>':'')+'</div>';
 }
@@ -330,7 +335,7 @@ html+='<section class="sec" id="s2"><div class="kick">Остановка II · �
  '<p>Мир без государств, полиции и документов. Вы подходите к чужому дому в чужой земле — и никто не накажет хозяина, если он вас убьёт. Как вообще возможны путешествия и торговля?</p>'+
  '<p>Ответ грека: есть <b>ксения</b> — не вежливость, а обязанность перед верховным богом. Зевс носил прозвище Ксений, покровитель странников: под лохмотьями нищего у порога мог оказаться он сам. В фильме этот кодекс назван прямо — <b>закон Зевса</b>.</p>'+
  '<p>Держалось всё на подарке: между чужими это единственное доказательство, что гость не враг. Условие одно, негласное: <b>дар не подделывают</b>.</p>'+
- med(null,'assets/bg/citadel-wide-B.png','Цитадель у моря · иллюстрация создана ИИ')+
+ med('assets/bg/citadel-loop.mp4','assets/bg/citadel-wide-B.png','Цитадель у моря · бесшовный луп, сгенерировано ИИ')+
  '</section>';
 
 html+='<section class="sec" id="s3"><div class="kick">Остановка III · протокол</div>'+
@@ -345,7 +350,7 @@ html+='<section class="sec" id="s4"><div class="kick">Остановка IV · �
  '<h2>Конь — не хитрость. Это <em>подделанный дар</em></h2>'+
  '<p>Троянский конь, которым принято восхищаться со школы, — это дар, оставленный на берегу. Принять дар — обязанность; отвергнуть — оскорбление. Троянцы вносят его в город, потому что <b>дар нельзя не принять</b>.</p>'+
  '<p>Но дар оказался полым. Греки взяли единственное доказательство того, что чужак не враг, — и превратили его в ложь. Это не военная хитрость. Это <b>святотатство</b>. После него доверие к дару не восстанавливается ни для кого.</p>'+
- med('assets/clips/g2.mp4','assets/seq/h2.jpg','Дар тёмный: туман и бронзовая кромка · сгенерировано ИИ')+
+ med('assets/scrub-horse.mp4','assets/seq/h2.jpg','Листайте: туман → тлеющие швы → конь гаснет, город загорается · время привязано к скроллу','scrub')+
  '</section>';
 
 html+='<section class="sec" id="s5"><div class="kick">Остановка V · зеркало</div>'+
@@ -368,7 +373,7 @@ html+='<section class="sec" id="s7"><div class="kick">Остановка VII · 
  '<p>«Оппенгеймер» и «Одиссея» — один разговор, разложенный на два фильма. Ход, придуманный самым умным человеком в кадре; ход, который срабатывает идеально; ход, после которого прежнего мира больше нет.</p>'+
  '<p>Чтобы закончить цивилизацию, сегодня есть <b>12 241 боеголовка</b>. А тогда хватило <b>одного подделанного дара</b>, чтобы сломать правило, на котором держалось доверие между чужими.</p>'+
  '<p>Цивилизацию убивает не мощность. Её убивает момент, когда кто-то очень умный решает, что правило можно обойти один раз — ради своих, ради победы. Дальше оно не работает уже ни для кого. Это не кара свыше — это арифметика.</p>'+
- med('assets/clips/a6.mp4','assets/seq/s6.jpg','Шляпка на тропопаузе · сгенерировано ИИ')+
+ med('assets/scrub-boom.mp4','assets/seq/s6.jpg','Листайте: башня → вспышка → оболочка → кольцо → стебель → тор → шляпка · время привязано к скроллу','scrub')+
  '</section>';
 
 html+='<section class="sec" id="s8"><div class="kick">Остановка VIII · кровать</div>'+
@@ -564,8 +569,40 @@ function plUpd(){
     }
   });
 }
-plRanges();plUpd();spy();
-addEventListener('resize',function(){plRanges();plUpd()},{passive:true});
+/* ═══ скраб-видео: время идёт со скроллом ═══ */
+var scrubs=[];
+$$('.scrubv').forEach(function(v){
+  var o={v:v,dur:0,at:-1};
+  v.addEventListener('loadedmetadata',function(){o.dur=v.duration||0;scrubUpd()});
+  scrubs.push(o);
+});
+if(scrubs.length&&'IntersectionObserver' in window){
+  var lio=new IntersectionObserver(function(es){es.forEach(function(en){
+    if(en.isIntersecting){var v=en.target;if(v.preload!=='auto'){v.preload='auto';v.load()}}
+  })},{rootMargin:'160%'});
+  scrubs.forEach(function(o){lio.observe(o.v)});
+}
+var unlocked=false;
+function unlock(){
+  if(unlocked)return;unlocked=true;
+  scrubs.forEach(function(o){var pr=o.v.play();if(pr&&pr.then)pr.then(function(){o.v.pause()}).catch(function(){})});
+}
+addEventListener('touchstart',unlock,{once:true,passive:true});
+addEventListener('pointerdown',unlock,{once:true,passive:true});
+function scrubUpd(){
+  scrubs.forEach(function(o){
+    if(!o.dur||!o.v.isConnected)return;
+    var r=o.v.getBoundingClientRect();
+    if(r.bottom<-300||r.top>innerHeight+300)return;
+    var p=(innerHeight-r.top)/(innerHeight+r.height);
+    p=Math.max(0,Math.min(1,p));
+    var w=p*Math.max(0,o.dur-0.05);
+    if(Math.abs(w-o.at)>0.02){o.at=w;try{o.v.currentTime=w}catch(e){}}
+  });
+}
+
+plRanges();plUpd();spy();scrubUpd();
+addEventListener('resize',function(){plRanges();plUpd();scrubUpd()},{passive:true});
 
 /* финальный выбор */
 $$('#choices .choice').forEach(function(b){
@@ -586,7 +623,7 @@ addEventListener('scroll',function(){
     var d=document.documentElement;
     var p=d.scrollTop/(d.scrollHeight-d.clientHeight||1);
     bar.style.width=(p*100).toFixed(2)+'%';
-    plUpd();spy();
+    plUpd();spy();scrubUpd();
   });
 },{passive:true});
 
@@ -597,7 +634,7 @@ if('IntersectionObserver' in window){
     if(en.isIntersecting){var pr=v.play();if(pr&&pr.catch)pr.catch(function(){})}
     else v.pause();
   })},{threshold:.15});
-  $$('video').forEach(function(v){io.observe(v)});
+  $$('video').forEach(function(v){if(!v.classList.contains('scrubv'))io.observe(v)});
 }
 
 refreshAch();renderPanels();
