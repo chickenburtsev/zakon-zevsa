@@ -24,6 +24,17 @@ img,video{max-width:100%;display:block}
 button{font-family:inherit;cursor:pointer}
 a{color:var(--sea)}
 
+/* ═══ ФОНОВЫЕ ПЛАШКИ ═══ */
+#bgfield{position:fixed;inset:0;z-index:-2;pointer-events:none;overflow:hidden;background:var(--abyss)}
+#bgfield .pl{position:absolute;left:0;top:0;width:100vw;height:max(70vw,80svh);opacity:0;
+  transition:opacity .7s ease;will-change:transform,opacity}
+#bgfield .pl img{width:100%;height:100%;object-fit:cover;filter:saturate(.78) brightness(.9);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 86%,transparent);
+  mask-image:linear-gradient(180deg,transparent 0,#000 12%,#000 86%,transparent)}
+#bgfield .dim{position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(5,8,14,.66),rgba(5,8,14,.42) 32%,rgba(5,8,14,.48) 68%,rgba(5,8,14,.82))}
+@media(max-width:760px){#bgfield .dim{background:linear-gradient(180deg,rgba(5,8,14,.74),rgba(5,8,14,.55) 32%,rgba(5,8,14,.6) 68%,rgba(5,8,14,.88))}}
+
 /* ═══ НАВБАР ═══ */
 #nav{position:fixed;inset:0 0 auto;z-index:50;
   background:linear-gradient(180deg,rgba(5,8,14,.94),rgba(5,8,14,.8) 75%,rgba(5,8,14,0));
@@ -38,6 +49,17 @@ a{color:var(--sea)}
 .nbtn b{color:var(--bronze)}
 .nbtn.acc{border-color:rgba(200,112,63,.55)}
 #burger{display:none}
+/* десктоп: главы прямо в навбаре, кнопка «Главы» уходит */
+#chapNav{display:none;flex:1;justify-content:center;align-items:center;gap:4px;min-width:0}
+#chapNav a{color:rgba(240,235,226,.45);font-family:var(--serif);font-style:italic;font-size:17px;
+  line-height:1;text-decoration:none;padding:6px 8px;border-radius:8px;transition:color .2s}
+#chapNav a:hover{color:rgba(240,235,226,.85)}
+#chapNav a.on{color:var(--accent)}
+@media(min-width:900px){
+  #chapNav{display:flex}
+  #nbCh{display:none}
+  #nav .sp{display:none}
+}
 @media(max-width:760px){
   .nbtn .lbl{display:none}
   .nbtn{padding:6px 10px}
@@ -69,6 +91,10 @@ a{color:var(--sea)}
 .card.q.done h4::after{content:' · пройдено ✓';font-weight:600}
 .fact-num{font-family:var(--serif);font-size:30px;line-height:1.05;color:var(--paper)}
 .fact-num em{font-style:italic;color:var(--accent)}
+.golinks{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.golink{display:inline-block;border:1px solid rgba(184,145,47,.45);border-radius:16px;background:rgba(184,145,47,.07);
+  color:var(--bronze);font-size:12.5px;font-weight:700;letter-spacing:.02em;padding:6px 12px;text-decoration:none;line-height:1.2}
+a.golink{color:var(--bronze)}
 .card a{font-size:13px}
 .arow{display:flex;gap:14px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
 .arow .ico{font-size:24px;width:34px;text-align:center;filter:grayscale(1);opacity:.35}
@@ -158,6 +184,7 @@ footer{max-width:660px;margin:0 auto;padding:6vh 20px 14vh;color:rgba(240,235,22
 <nav id="nav">
   <div class="bar">
     <a class="logo" href="#s-intro">Закон <i>Зевса</i></a>
+    <div id="chapNav" aria-label="Главы"></div>
     <div class="sp"></div>
     <button class="nbtn" id="nbCh">☰ <span class="lbl">Главы</span></button>
     <button class="nbtn acc" id="nbAct">⚔ <span class="lbl">Активности</span></button>
@@ -167,6 +194,7 @@ footer{max-width:660px;margin:0 auto;padding:6vh 20px 14vh;color:rgba(240,235,22
   <div id="prog"><i></i></div>
 </nav>
 
+<div id="bgfield" aria-hidden="true"></div>
 <main id="main"></main>
 
 <footer>
@@ -247,12 +275,18 @@ var QUESTS={
    ex:'Хвост сиренам приделало Средневековье. У Гомера о внешности — ни слова: они соблазняют не телом, а знанием.'}]}
 };
 var FACTS=[
- {n:'12 241 <em>или 1</em>',p:'Боеголовок в мире на январь 2025-го (SIPRI) — чтобы закончить цивилизацию за час. Тогда хватило одного подделанного дара.',a:'index.html'},
- {n:'24 = 24',p:'Двадцать четыре песни поэмы — и двадцать четыре шага приёма гостя. Интерактивный протокол за шестерых хозяев — в полном разборе.',a:'index.html'},
- {n:'$1 009 464 707',p:'Мировые сборы: миллиард — в четвёртую пятницу проката, при бюджете 250 миллионов. Лучший старт в карьере Нолана.',a:'index.html'},
- {n:'+70% / +76%',p:'Рост продаж Гомера в Британии и США после премьеры. Запросы «выучить греческий» — +5000%.',a:'index.html'},
- {n:'×9,6',p:'Во столько раз площадь кадра IMAX 15/70 больше обычного 35-мм кадра. Демо «зерно против пикселя» — в полном разборе.',a:'index.html'},
- {n:'94% / 97%',p:'Критики и зрители на Rotten Tomatoes — лучший результат режиссёра. На Metacritic разрыв 88 против 5,6 — след организованного занижения.',a:'index.html'}
+ {n:'12 241 <em>или 1</em>',p:'Боеголовок в мире на январь 2025-го (SIPRI) — чтобы закончить цивилизацию за час. Тогда хватило одного подделанного дара.',
+  go:'s7',t:'остановка VII · Тринити',a:'index.html#s-count',at:'счётчик боеголовок и взрыв по фазам'},
+ {n:'24 = 24',p:'Двадцать четыре песни поэмы — и двадцать четыре шага приёма гостя.',
+  go:'s3',t:'остановка III · Протокол',a:'index.html#ch3b',at:'интерактивный протокол за шестерых хозяев'},
+ {n:'$1 009 464 707',p:'Мировые сборы: миллиард — в четвёртую пятницу проката, при бюджете 250 миллионов. Лучший старт в карьере Нолана.',
+  go:null,t:null,a:'index.html#s-vote',at:'касса, уикенды и рейтинги'},
+ {n:'+70% / +76%',p:'Рост продаж Гомера в Британии и США после премьеры. Запросы «выучить греческий» — +5000%.',
+  go:null,t:null,a:'index.html#ch11b',at:'что премьера сделала с книжными продажами'},
+ {n:'×9,6',p:'Во столько раз площадь кадра IMAX 15/70 больше обычного 35-мм кадра.',
+  go:null,t:null,a:'index.html#s-film',at:'демо «зерно против пикселя»'},
+ {n:'94% / 97%',p:'Критики и зрители на Rotten Tomatoes — лучший результат режиссёра. На Metacritic разрыв 88 против 5,6 — след организованного занижения.',
+  go:null,t:null,a:'index.html#s-vote',at:'полные цифры проката'}
 ];
 var CH=[
  {id:'s1',n:'I',t:'Не с той стороны',d:'суд вместо приключений'},
@@ -410,9 +444,12 @@ function renderPanels(){
   $$('#actList .card.q').forEach(function(c){c.addEventListener('click',function(){
     $('#shAct').classList.remove('on');openQuest(c.dataset.q);
   })});
-  /* факты */
-  var f='';FACTS.forEach(function(x){
-    f+='<div class="card"><div class="fact-num">'+x.n+'</div><p>'+x.p+'</p></div>';
+  /* факты — кликабельные: якорь в приложении и/или инфографика полного разбора */
+  var f='';FACTS.forEach(function(x,i){
+    f+='<div class="card fact" data-i="'+i+'"><div class="fact-num">'+x.n+'</div><p>'+x.p+'</p><div class="golinks">'+
+      (x.go?'<button class="golink" data-go="'+x.go+'">↧ '+x.t+'</button>':'')+
+      '<a class="golink deep" href="'+x.a+'">✦ '+x.at+' →</a>'+
+      '</div></div>';
   });
   f+='<p style="font-size:13px;color:rgba(240,235,226,.6);margin-top:8px">Источники и вся инфографика — в <a class="deep" href="index.html">полном разборе</a>: SIPRI 2025, The Numbers, Comscore, Circana BookScan, IMAX.</p>';
   $('#factList').innerHTML=f;
@@ -462,7 +499,73 @@ document.addEventListener('click',function(e){
   if(d){award('deep');save()}
   var oa=e.target.closest&&e.target.closest('#openAct2');
   if(oa)openSheet('shAct');
+  var gl=e.target.closest&&e.target.closest('.golink[data-go]');
+  if(gl){$$('.sheet').forEach(function(s){s.classList.remove('on')});
+    var el=document.getElementById(gl.dataset.go);
+    if(el)el.scrollIntoView({behavior:'smooth'});}
 });
+
+/* ═══ десктоп-меню глав + скролл-спай ═══ */
+(function(){
+  var cn=$('#chapNav');if(!cn)return;
+  CH.forEach(function(c){
+    var a=document.createElement('a');a.href='#'+c.id;a.textContent=c.n;
+    a.title=c.t+' — '+c.d;cn.appendChild(a);
+  });
+})();
+function spy(){
+  var links=$$('#chapNav a');if(!links.length)return;
+  var y=document.documentElement.scrollTop+innerHeight*.42,cur=-1;
+  CH.forEach(function(c,i){var el=document.getElementById(c.id);
+    if(el&&el.offsetTop<=y)cur=i;});
+  links.forEach(function(a,i){a.classList.toggle('on',i===cur)});
+}
+
+/* ═══ фоновые плашки с параллаксом (и на мобиле) ═══ */
+var PL=[
+ {img:'assets/bg/plate1-aegean.jpg', from:'s1',to:'s3', horizon:.42,rate:.05},
+ {img:'assets/bg/citadel-wide-B.png',from:'s3',to:'s5', horizon:.55,rate:.05},
+ {img:'assets/bg/plate3-storm.jpg',  from:'s5',to:'s7', horizon:.50,rate:.05},
+ {img:'assets/bg/galley-A-crop.png', from:'s7',to:null, horizon:.20,rate:.14}
+];
+var bgf=$('#bgfield'),plates=[];
+if(bgf){
+  PL.forEach(function(c){
+    var d=document.createElement('div');d.className='pl';
+    var im=new Image();im.decoding='async';im.loading='lazy';
+    im.onerror=function(){d.remove()};
+    im.src=c.img;d.appendChild(im);
+    bgf.appendChild(d);plates.push({el:d,c:c,start:0,end:1,baseTop:0});
+  });
+  var dim=document.createElement('div');dim.className='dim';bgf.appendChild(dim);
+}
+function plRanges(){
+  var H=document.documentElement.scrollHeight;
+  plates.forEach(function(L){
+    var a=document.getElementById(L.c.from),b=L.c.to?document.getElementById(L.c.to):null;
+    L.start=(a?a.offsetTop:0)-innerHeight*.5;
+    L.end=(b?b.offsetTop:H)-innerHeight*.25;
+    var vh=innerHeight,vw=innerWidth,h=Math.max(vw*.70,vh*.80);
+    L.baseTop=vh*.46-L.c.horizon*h;
+  });
+}
+function plUpd(){
+  var scY=document.documentElement.scrollTop,m=innerHeight*.55;
+  plates.forEach(function(L){
+    if(!L.el.isConnected)return;
+    var o=0;
+    if(scY>L.start-m&&scY<L.end+m){
+      o=Math.max(0,Math.min(Math.min(1,(scY-(L.start-m))/m),Math.min(1,((L.end+m)-scY)/m)))*.66;
+    }
+    L.el.style.opacity=o.toFixed(3);
+    if(o>0){
+      var ty=L.baseTop-(scY-Math.max(0,L.start))*L.c.rate;
+      L.el.style.transform='translateY('+ty.toFixed(1)+'px)';
+    }
+  });
+}
+plRanges();plUpd();spy();
+addEventListener('resize',function(){plRanges();plUpd()},{passive:true});
 
 /* финальный выбор */
 $$('#choices .choice').forEach(function(b){
@@ -475,11 +578,16 @@ $$('#choices .choice').forEach(function(b){
 });
 
 /* ═══ скролл: прогресс ═══ */
-var bar=$('#prog i');
+var bar=$('#prog i'),tick=false;
 addEventListener('scroll',function(){
-  var d=document.documentElement;
-  var p=d.scrollTop/(d.scrollHeight-d.clientHeight||1);
-  bar.style.width=(p*100).toFixed(2)+'%';
+  if(tick)return;tick=true;
+  requestAnimationFrame(function(){
+    tick=false;
+    var d=document.documentElement;
+    var p=d.scrollTop/(d.scrollHeight-d.clientHeight||1);
+    bar.style.width=(p*100).toFixed(2)+'%';
+    plUpd();spy();
+  });
 },{passive:true});
 
 /* видео вне экрана — на паузу (экономия батареи) */
