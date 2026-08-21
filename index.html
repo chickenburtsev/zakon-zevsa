@@ -2287,7 +2287,7 @@ $$('.scene').forEach(function(sc){
       var a=parseFloat(s.dataset.from)||0,b=parseFloat(s.dataset.to)||1;
       s.classList.toggle('on',p>=a&&p<b);
     });
-    if(dur){var w=p*dur; if(Math.abs(w-at)>.02){at=w;try{v.currentTime=w;}catch(e){}}}
+    if(dur){var w=Math.min(1,p/0.92)*Math.max(0,dur-0.04); if(Math.abs(w-at)>.02){at=w;try{v.currentTime=w;}catch(e){}}}
     sc.__p=p;
     if(fb&&fb.__draw) fb.__draw(p);
   }
