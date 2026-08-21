@@ -124,13 +124,13 @@ button.med.cine{display:block;width:100%;padding:0;border:1px solid var(--line);
   display:flex;align-items:center;justify-content:center;font-style:normal;font-size:16px;padding-left:3px;
   box-shadow:0 4px 18px rgba(200,112,63,.45)}
 /* кино-модалка */
-#cinema{position:fixed;inset:0;z-index:90;background:rgba(3,5,9,.96);display:none;
+#cinema{position:fixed;inset:0;z-index:90;background:#05070b;display:none;
   flex-direction:column;align-items:center;justify-content:center;padding:0 14px}
 #cinema.on{display:flex}
 #cinema video{width:min(92vw,74svh);aspect-ratio:1/1;border-radius:14px;background:#000}
 #cinKick{font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--bronze);margin-bottom:10px}
 #cinCap{font-family:var(--serif);font-size:clamp(19px,4.6vw,24px);line-height:1.25;color:var(--paper);
-  text-align:center;min-height:2.6em;margin-top:14px;max-width:520px;transition:opacity .25s}
+  text-align:center;min-height:2.6em;margin-top:14px;max-width:520px}
 #cinBar{width:min(92vw,74svh);height:3px;border-radius:2px;background:rgba(240,235,226,.14);margin-top:12px;overflow:hidden}
 #cinBar i{display:block;height:100%;width:0;background:var(--accent)}
 #cinX{position:absolute;top:calc(14px + var(--st));right:16px;background:rgba(240,235,226,.08);
@@ -405,7 +405,7 @@ html+='<section class="sec" id="s7"><div class="kick">Остановка VII · 
  '<p>«Оппенгеймер» и «Одиссея» — один разговор, разложенный на два фильма. Ход, придуманный самым умным человеком в кадре; ход, который срабатывает идеально; ход, после которого прежнего мира больше нет.</p>'+
  '<p>Чтобы закончить цивилизацию, сегодня есть <b>12 241 боеголовка</b>. А тогда хватило <b>одного подделанного дара</b>, чтобы сломать правило, на котором держалось доверие между чужими.</p>'+
  '<p>Цивилизацию убивает не мощность. Её убивает момент, когда кто-то очень умный решает, что правило можно обойти один раз — ради своих, ради победы. Дальше оно не работает уже ни для кого. Это не кара свыше — это арифметика.</p>'+
- med(null,'assets/seq/s6.jpg','Смотреть: все стадии взрыва от башни до шляпки · 32 сек','cine','boom')+
+ med(null,'assets/seq/s6.jpg','Смотреть: все стадии взрыва от башни до шляпки · 28 сек','cine','boom')+
  '</section>';
 
 html+='<section class="sec" id="s8"><div class="kick">Остановка VIII · кровать</div>'+
@@ -609,13 +609,13 @@ var CINE={
    [14.5,'Конь гаснет. На горизонте загорается город']]},
  boom:{kick:'Взрыв · все стадии',src:'assets/scrub-boom.mp4',caps:[
    [0,'До: стальная башня в сто метров — линейка всей серии'],
-   [1.95,'Вспышка. Меньше миллисекунды'],
-   [2.6,'«Верёвочные трюки»: оттяжки превращаются в линии света'],
-   [3.6,'Купол растёт; впереди отрывается прозрачная ударная оболочка'],
-   [9.8,'Облако Вильсона: кольцо росы, сгустившейся из воздуха'],
-   [10.9,'Стебель и пылевая юбка; вал бежит по равнине'],
-   [17.9,'Тороидальный вихрь: «бублик» перекатывает сам себя'],
-   [24.9,'Шляпка растекается по тропопаузе. Восемь минут — двадцать километров']]}
+   [1.1,'Вспышка. Свет рождается на вершине башни — меньше миллисекунды'],
+   [2.9,'«Верёвочные трюки»: оттяжки превращаются в линии света'],
+   [4.8,'Компактный огненный шар: воздух не горит — он светится сам'],
+   [7.4,'Шар дымится и всплывает; под ним растёт пыльный стебель'],
+   [10.2,'Пылевой вал бежит по равнине, у подножия — юбка'],
+   [12.6,'Тороидальный вихрь: «бублик» перекатывает сам себя'],
+   [20.0,'Шляпка растекается по тропопаузе. Восемь минут — двадцать километров']]}
 };
 var cinV=$('#cinV'),cinCap=$('#cinCap'),cinBar=$('#cinBar i'),cinBox=$('#cinema');
 function openCine(key){
@@ -638,8 +638,7 @@ cinV.addEventListener('timeupdate',function(){
   var caps=cinV.__caps;if(!caps)return;
   var t=cinV.currentTime,i=0;
   for(var k=0;k<caps.length;k++){if(t>=caps[k][0])i=k;}
-  if(i!==cinV.__ci){cinV.__ci=i;cinCap.style.opacity=0;
-    setTimeout(function(){cinCap.textContent=caps[i][1];cinCap.style.opacity=1},180);}
+  if(i!==cinV.__ci){cinV.__ci=i;cinCap.textContent=caps[i][1];}
   if(cinV.duration)cinBar.style.width=(t/cinV.duration*100).toFixed(1)+'%';
 });
 cinV.addEventListener('ended',function(){cinBox.classList.add('done')});
