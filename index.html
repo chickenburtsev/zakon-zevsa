@@ -2377,19 +2377,23 @@ $$('.bleed[data-img]').forEach(function(fig){
         var c=at(x+cell/2,y+cell/2);ctx.fillStyle='rgb('+c[0]+','+c[1]+','+c[2]+')';
         ctx.fillRect(x,y,Math.ceil(cell),Math.ceil(cell));}
     }
-    /* ПРАВО: тот же кадр случайным зерном; у зерна есть физический размер,
-       поэтому даже при ×1 плёнка чуть «дышит» — это и есть фактура */
-    var gcell=Math.max(cell,1.5*DPR);
-    var n=Math.round(HALF*H/(gcell*gcell)*3.6),r=seed;
-    function rnd(){r=(r*1664525+1013904223)%4294967296;return r/4294967296;}
-    /* подложка справа — тот же кадр, приглушённый: просветы между
-       зёрнами читаются как тень, а не как чёрные дыры */
+    /* ПРАВО: тот же кадр «плёнкой». У зерна нет решётки и нет потолка:
+       картинка остаётся резкой при любом увеличении, а сверху живёт
+       мелкое зерно, которое пересыпается несколько раз в секунду.
+       С зумом оно растёт медленно — поэтому справа кадр держится,
+       когда слева он уже рассыпался на квадраты */
     ctx.putImageData(new ImageData(new Uint8ClampedArray(truth),HALF,H),HALF,0);
-    ctx.fillStyle='rgba(5,8,14,.32)';ctx.fillRect(HALF,0,W-HALF,H);
+    var r=seed;
+    function rnd(){r=(r*1664525+1013904223)%4294967296;return r/4294967296;}
+    var g=DPR*(.55+(zoom-1)*.16);
+    var n=Math.min(9000,Math.round(HALF*H/(g*g*7)));
+    ctx.globalAlpha=.5;
     for(var k=0;k<n;k++){
       var gx=rnd()*HALF,gy=rnd()*H,c2=at(gx,gy);
-      ctx.fillStyle='rgb('+c2[0]+','+c2[1]+','+c2[2]+')';
-      ctx.beginPath();ctx.arc(HALF+gx,gy,gcell*(.34+rnd()*.44),0,6.29);ctx.fill();}
+      var j=1+(rnd()-.5)*.5;
+      ctx.fillStyle='rgb('+Math.min(255,c2[0]*j|0)+','+Math.min(255,c2[1]*j|0)+','+Math.min(255,c2[2]*j|0)+')';
+      ctx.beginPath();ctx.arc(HALF+gx,gy,g*(.5+rnd()*.7),0,6.29);ctx.fill();}
+    ctx.globalAlpha=1;
     ctx.fillStyle='rgba(240,235,226,.22)';ctx.fillRect(HALF-1,0,2,H);
   }
   function setZ(v){zoom=+v;val.textContent='×'+(+v).toFixed(0);render();}
