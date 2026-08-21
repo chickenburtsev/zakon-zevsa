@@ -115,6 +115,28 @@ main{display:block}
 .med{margin:20px 0;border-radius:14px;overflow:hidden;position:relative;border:1px solid var(--line);background:#04070c}
 .med img,.med video{width:100%;aspect-ratio:16/9;object-fit:cover;filter:saturate(.84) brightness(.95)}
 .med.sq img,.med.sq video{aspect-ratio:1/1;max-height:74svh;object-fit:cover}
+/* кино-блок: постер с кнопкой */
+button.med.cine{display:block;width:100%;padding:0;border:1px solid var(--line);background:#04070c;cursor:pointer;text-align:left}
+.playb{position:absolute;left:0;right:0;bottom:0;display:flex;gap:12px;align-items:center;
+  padding:26px 14px 12px;font-size:13px;line-height:1.35;color:var(--paper);font-family:var(--sans);
+  background:linear-gradient(0deg,rgba(5,8,14,.92),rgba(5,8,14,.55) 60%,transparent);text-align:left}
+.playb i{flex:none;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#120a06;
+  display:flex;align-items:center;justify-content:center;font-style:normal;font-size:16px;padding-left:3px;
+  box-shadow:0 4px 18px rgba(200,112,63,.45)}
+/* кино-модалка */
+#cinema{position:fixed;inset:0;z-index:90;background:rgba(3,5,9,.96);display:none;
+  flex-direction:column;align-items:center;justify-content:center;padding:0 14px}
+#cinema.on{display:flex}
+#cinema video{width:min(92vw,74svh);aspect-ratio:1/1;border-radius:14px;background:#000}
+#cinKick{font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--bronze);margin-bottom:10px}
+#cinCap{font-family:var(--serif);font-size:clamp(19px,4.6vw,24px);line-height:1.25;color:var(--paper);
+  text-align:center;min-height:2.6em;margin-top:14px;max-width:520px;transition:opacity .25s}
+#cinBar{width:min(92vw,74svh);height:3px;border-radius:2px;background:rgba(240,235,226,.14);margin-top:12px;overflow:hidden}
+#cinBar i{display:block;height:100%;width:0;background:var(--accent)}
+#cinX{position:absolute;top:calc(14px + var(--st));right:16px;background:rgba(240,235,226,.08);
+  border:1px solid var(--line);color:var(--paper);border-radius:50%;width:40px;height:40px;font-size:17px}
+#cinAgain{display:none;margin-top:14px}
+#cinema.done #cinAgain{display:inline-block}
 .med .cap{position:absolute;left:0;right:0;bottom:0;padding:24px 14px 8px;font-size:11px;letter-spacing:.08em;
   color:rgba(240,235,226,.78);background:linear-gradient(0deg,rgba(5,8,14,.85),transparent);pointer-events:none}
 .spoil{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
@@ -227,6 +249,15 @@ footer{max-width:660px;margin:0 auto;padding:6vh 20px 14vh;color:rgba(240,235,22
   <div class="row"><span class="prog" id="qprog"></span><button class="btn small" id="qnext" style="display:none">Дальше</button></div>
 </div></div>
 
+<div id="cinema" role="dialog" aria-label="Анимация">
+  <button id="cinX" aria-label="Закрыть">✕</button>
+  <div id="cinKick"></div>
+  <video id="cinV" playsinline muted preload="auto"></video>
+  <div id="cinBar"><i></i></div>
+  <div id="cinCap"></div>
+  <button class="btn small" id="cinAgain">▶ Ещё раз</button>
+</div>
+
 <div id="toast" role="status"><div class="ico">🏆</div><div><div class="tt">Достижение</div><div class="tn" id="toastN"></div></div></div>
 
 <script>
@@ -307,10 +338,11 @@ var qdone={};try{qdone=JSON.parse(localStorage.getItem('zz-quests')||'{}')}catch
 function save(){try{localStorage.setItem('zz-ach',JSON.stringify(got));localStorage.setItem('zz-quests',JSON.stringify(qdone))}catch(e){}}
 
 /* ═══ разметка секций ═══ */
-function med(video,img,cap,mode){
-  if(mode==='scrub'){
-    return '<div class="med sq"><video class="scrubv" muted playsinline preload="metadata" poster="'+img+'" src="'+video+'"></video>'+
-    (cap?'<div class="cap">'+cap+'</div>':'')+'</div>';
+function med(video,img,cap,mode,cine){
+  if(mode==='cine'){
+    return '<button class="med sq cine" data-cine="'+cine+'" aria-label="Смотреть анимацию">'+
+      '<img src="'+img+'" alt="" loading="lazy">'+
+      '<span class="playb"><i>▶</i>'+cap+'</span></button>';
   }
   return '<div class="med">'+(video?'<video muted loop playsinline autoplay preload="metadata" poster="'+img+'"><source src="'+video+'" type="video/mp4"></video>':'<img src="'+img+'" alt="" loading="lazy">')+
   (cap?'<div class="cap">'+cap+'</div>':'')+'</div>';
@@ -350,7 +382,7 @@ html+='<section class="sec" id="s4"><div class="kick">Остановка IV · �
  '<h2>Конь — не хитрость. Это <em>подделанный дар</em></h2>'+
  '<p>Троянский конь, которым принято восхищаться со школы, — это дар, оставленный на берегу. Принять дар — обязанность; отвергнуть — оскорбление. Троянцы вносят его в город, потому что <b>дар нельзя не принять</b>.</p>'+
  '<p>Но дар оказался полым. Греки взяли единственное доказательство того, что чужак не враг, — и превратили его в ложь. Это не военная хитрость. Это <b>святотатство</b>. После него доверие к дару не восстанавливается ни для кого.</p>'+
- med('assets/scrub-horse.mp4','assets/seq/h2.jpg','Листайте: туман → тлеющие швы → конь гаснет, город загорается · время привязано к скроллу','scrub')+
+ med(null,'assets/seq/h2.jpg','Смотреть: дар оживает — туман, тлеющие швы, город загорается · 22 сек','cine','horse')+
  '</section>';
 
 html+='<section class="sec" id="s5"><div class="kick">Остановка V · зеркало</div>'+
@@ -373,7 +405,7 @@ html+='<section class="sec" id="s7"><div class="kick">Остановка VII · 
  '<p>«Оппенгеймер» и «Одиссея» — один разговор, разложенный на два фильма. Ход, придуманный самым умным человеком в кадре; ход, который срабатывает идеально; ход, после которого прежнего мира больше нет.</p>'+
  '<p>Чтобы закончить цивилизацию, сегодня есть <b>12 241 боеголовка</b>. А тогда хватило <b>одного подделанного дара</b>, чтобы сломать правило, на котором держалось доверие между чужими.</p>'+
  '<p>Цивилизацию убивает не мощность. Её убивает момент, когда кто-то очень умный решает, что правило можно обойти один раз — ради своих, ради победы. Дальше оно не работает уже ни для кого. Это не кара свыше — это арифметика.</p>'+
- med('assets/scrub-boom.mp4','assets/seq/s6.jpg','Листайте: башня → вспышка → оболочка → кольцо → стебель → тор → шляпка · время привязано к скроллу','scrub')+
+ med(null,'assets/seq/s6.jpg','Смотреть: все стадии взрыва от башни до шляпки · 32 сек','cine','boom')+
  '</section>';
 
 html+='<section class="sec" id="s8"><div class="kick">Остановка VIII · кровать</div>'+
@@ -569,55 +601,56 @@ function plUpd(){
     }
   });
 }
-/* ═══ скраб-видео: время идёт со скроллом ═══ */
-var scrubs=[];
-$$('.scrubv').forEach(function(v){
-  var o={v:v,dur:0,at:-1};
-  v.addEventListener('loadedmetadata',function(){o.dur=v.duration||0;scrubUpd()});
-  scrubs.push(o);
+/* ═══ кино-модалка: полные анимации с подписями стадий ═══ */
+var CINE={
+ horse:{kick:'Дар · три состояния',src:'assets/scrub-horse.mp4',caps:[
+   [0,'Туман наползает с воды; лунный свет находит бронзовую кромку на гребне'],
+   [7.25,'Между досками проступают тлеющие швы — дар дышит изнутри'],
+   [14.5,'Конь гаснет. На горизонте загорается город']]},
+ boom:{kick:'Взрыв · все стадии',src:'assets/scrub-boom.mp4',caps:[
+   [0,'До: стальная башня в сто метров — линейка всей серии'],
+   [1.95,'Вспышка. Меньше миллисекунды'],
+   [2.6,'«Верёвочные трюки»: оттяжки превращаются в линии света'],
+   [3.6,'Купол растёт; впереди отрывается прозрачная ударная оболочка'],
+   [9.8,'Облако Вильсона: кольцо росы, сгустившейся из воздуха'],
+   [10.9,'Стебель и пылевая юбка; вал бежит по равнине'],
+   [17.9,'Тороидальный вихрь: «бублик» перекатывает сам себя'],
+   [24.9,'Шляпка растекается по тропопаузе. Восемь минут — двадцать километров']]}
+};
+var cinV=$('#cinV'),cinCap=$('#cinCap'),cinBar=$('#cinBar i'),cinBox=$('#cinema');
+function openCine(key){
+  var c=CINE[key];if(!c)return;
+  $('#cinKick').textContent=c.kick;
+  cinBox.classList.remove('done');cinBox.classList.add('on');
+  cinCap.textContent=c.caps[0][1];
+  cinV.src=c.src;cinV.currentTime=0;
+  cinV.__caps=c.caps;cinV.__ci=-1;
+  var pr=cinV.play();if(pr&&pr.catch)pr.catch(function(){});
+}
+function closeCine(){cinBox.classList.remove('on');cinV.pause();cinV.removeAttribute('src');cinV.load()}
+$('#cinX').addEventListener('click',closeCine);
+cinBox.addEventListener('click',function(e){if(e.target===cinBox)closeCine()});
+$('#cinAgain').addEventListener('click',function(){
+  cinBox.classList.remove('done');cinV.currentTime=0;
+  var pr=cinV.play();if(pr&&pr.catch)pr.catch(function(){});
 });
-if(scrubs.length&&'IntersectionObserver' in window){
-  var lio=new IntersectionObserver(function(es){es.forEach(function(en){
-    if(en.isIntersecting){var v=en.target;if(v.preload!=='auto'){v.preload='auto';v.load()}}
-  })},{rootMargin:'160%'});
-  scrubs.forEach(function(o){lio.observe(o.v)});
-}
-var unlocked=false;
-function unlock(){
-  if(unlocked)return;unlocked=true;
-  scrubs.forEach(function(o){var pr=o.v.play();if(pr&&pr.then)pr.then(function(){o.v.pause()}).catch(function(){})});
-}
-addEventListener('touchstart',unlock,{once:true,passive:true});
-addEventListener('pointerdown',unlock,{once:true,passive:true});
-function scrubUpd(){
-  scrubs.forEach(function(o){
-    if(!o.dur||!o.v.isConnected)return;
-    var r=o.v.getBoundingClientRect();
-    if(r.bottom<-300||r.top>innerHeight+300){o.tgt=null;return}
-    /* видео доигрывает, пока блок ещё виден: конец — когда верх блока
-       поднялся к ~45% экрана, а не при полном уходе за кадр */
-    var p=(innerHeight-r.top)/(innerHeight*.55+r.height);
-    p=Math.max(0,Math.min(1,p));
-    o.tgt=p*Math.max(0,o.dur-0.05);
-  });
-}
-/* плавная перемотка: время догоняет цель, а не прыгает — скролл не стробит */
-(function tickScrub(){
-  scrubs.forEach(function(o){
-    if(!o.dur||o.tgt==null)return;
-    var cur=o.at<0?o.tgt:o.at;
-    var d=o.tgt-cur;
-    if(Math.abs(d)>0.03){
-      cur+=d*0.14;
-      o.at=cur;
-      try{o.v.currentTime=cur}catch(e){}
-    }
-  });
-  requestAnimationFrame(tickScrub);
-})();
+cinV.addEventListener('timeupdate',function(){
+  var caps=cinV.__caps;if(!caps)return;
+  var t=cinV.currentTime,i=0;
+  for(var k=0;k<caps.length;k++){if(t>=caps[k][0])i=k;}
+  if(i!==cinV.__ci){cinV.__ci=i;cinCap.style.opacity=0;
+    setTimeout(function(){cinCap.textContent=caps[i][1];cinCap.style.opacity=1},180);}
+  if(cinV.duration)cinBar.style.width=(t/cinV.duration*100).toFixed(1)+'%';
+});
+cinV.addEventListener('ended',function(){cinBox.classList.add('done')});
+document.addEventListener('click',function(e){
+  var c=e.target.closest&&e.target.closest('[data-cine]');
+  if(c)openCine(c.dataset.cine);
+});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeCine()});
 
-plRanges();plUpd();spy();scrubUpd();
-addEventListener('resize',function(){plRanges();plUpd();scrubUpd()},{passive:true});
+plRanges();plUpd();spy();
+addEventListener('resize',function(){plRanges();plUpd()},{passive:true});
 
 /* финальный выбор */
 $$('#choices .choice').forEach(function(b){
@@ -638,7 +671,7 @@ addEventListener('scroll',function(){
     var d=document.documentElement;
     var p=d.scrollTop/(d.scrollHeight-d.clientHeight||1);
     bar.style.width=(p*100).toFixed(2)+'%';
-    plUpd();spy();scrubUpd();
+    plUpd();spy();
   });
 },{passive:true});
 
