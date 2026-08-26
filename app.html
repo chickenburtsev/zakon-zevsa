@@ -809,10 +809,11 @@ function pinIcon(p){
 function initMap(){
   if(!HASL){ document.getElementById('map').innerHTML=
     '<div style="display:grid;place-items:center;height:100%;color:#6d675d;font-size:14px;text-align:center;padding:30px">Карта не загрузилась.<br>Проверьте сеть и перезапустите.</div>'; return; }
-  MAP=L.map('map',{zoomControl:false, attributionControl:true, minZoom:4, maxZoom:12})
+  MAP=L.map('map',{zoomControl:false, attributionControl:true, minZoom:5, maxZoom:8})
       .setView([38.3,17.5], 5);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',
-    {attribution:'© OpenStreetMap · © CARTO', subdomains:'abcd', maxZoom:19}).addTo(MAP);
+  var B=[[31.0,8.0],[43.5,28.5]];
+  L.imageOverlay('assets/map-base.jpg', B, {attribution:'берега: GLOBE/NOAA'}).addTo(MAP);
+  MAP.setMaxBounds([[29.5,5.5],[45.0,31.0]]); MAP.setMinZoom(5); MAP.setMaxZoom(8);
   L.polyline(RT,{color:'#c9a227',weight:2.5,opacity:.85,dashArray:'1 7',lineCap:'round'}).addTo(MAP);
   PT.forEach(function(p){
     var m=L.marker([p.lat,p.lon],{icon:pinIcon(p)}).addTo(layerMain);
