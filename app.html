@@ -23,11 +23,14 @@ html,body{height:100%;background:var(--bg);color:var(--paper);font-family:var(--
 main{flex:1;position:relative;overflow:hidden}
 .tab{position:absolute;inset:0;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .tab.on{display:block}
-#t-map{overflow:hidden}
-#map{position:absolute;inset:0;background:#0a0e14}
+#t-map{overflow:hidden;isolation:isolate}
+#map{position:absolute;inset:0;background:#0a0e14;z-index:0}
 .leaflet-container{background:#0a0e14;font-family:var(--sans)}
 .leaflet-control-attribution{background:rgba(5,7,11,.6)!important;color:#666!important;font-size:9px!important}
 .leaflet-control-attribution a{color:#888!important}
+.leaflet-pane,.leaflet-top,.leaflet-bottom{z-index:1!important}
+.leaflet-pane .leaflet-marker-pane{z-index:2!important}
+.leaflet-pane .leaflet-overlay-pane{z-index:1!important}
 /* навбар */
 nav{display:flex;background:rgba(8,11,17,.97);border-top:1px solid rgba(201,162,39,.16);
  padding-bottom:var(--sab);z-index:50}
@@ -886,7 +889,7 @@ $('#schap').addEventListener('click',function(){
   var el=$('#chap-'+cid); if(el){ el.classList.add('open'); el.scrollIntoView({behavior:'smooth'}); }
   track('chapter_from_point',{point:CUR.id});
 });
-$('#map').addEventListener('click',function(e){ if(e.target.id==='map') closeSheet(); });
+$('#map').addEventListener('pointerdown',function(e){ if(e.target.id==='map'||e.target.classList.contains('leaflet-image-layer')) closeSheet(); });
 
 /* ═══ смыслы: полный контент веба ═══ */
 function buildChapters(){
@@ -997,15 +1000,21 @@ function onboarding(){
     (k===0?'<p style="color:var(--bronze);font-size:13px;letter-spacing:.1em">ПУТЕВОДИТЕЛЬ ПО «ОДИССЕЕ»</p>':'')+
     '<p>'+s.p+'</p><button class="btn gold">'+(k<2?'Дальше':'В путь')+'</button>'+
     '<div class="dots">'+steps.map(function(_,j){return '<i class="'+(j===k?'on':'')+'"></i>'}).join('')+'</div></div>';
-    $('.btn',el).addEventListener('click',function(){ k++; if(k>=3){ el.classList.remove('on'); lsSet('zz-onb','1'); track('onboarding_done'); } else draw(); });
   }
+  el.addEventListener('click',function(e){
+    if(!e.target.closest('.btn'))return;
+    k++; if(k>=3){ el.classList.remove('on'); lsSet('zz-onb','1'); track('onboarding_done'); } else draw();
+  });
   el.classList.add('on'); draw(); track('onboarding_start');
 }
 
 function refreshAll(){ buildChapters(); refreshMe(); if(HASL) PT.forEach(function(p){ if(markers[p.id]) markers[p.id].setIcon(pinIcon(p)); }); }
 
 /* ═══ старт ═══ */
-initMap(); buildChapters(); buildFilm(); refreshMe(); onboarding();
+[initMap,buildChapters,buildFilm,refreshMe,onboarding].forEach(function(f){
+  try{ f(); }catch(e){ try{track('js_error',{fn:f.name,msg:String(e).slice(0,90)})}catch(_){} }
+});
+window.addEventListener('error',function(e){ try{track('js_error',{msg:String(e.message).slice(0,90)})}catch(_){} });
 })();
 </script>
 </body></html>
