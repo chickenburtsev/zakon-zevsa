@@ -826,9 +826,6 @@ body{background:var(--abyss)}
 #sc1 .grade{background:linear-gradient(180deg,rgba(4,7,12,.35),transparent 40%,rgba(4,7,12,.72))}
 #sc1 .cap p{text-shadow:0 2px 30px rgba(0,0,0,.8),0 0 2px rgba(0,0,0,.6)}
 @media(max-width:820px){
- #sc1 .st video,#sc1 .st canvas,#sc2 .st video{object-fit:contain!important;object-position:center 34%!important;background:#05070b}
- #sc1 .cap,#sc2 .cap{bottom:6svh!important}
- #sc1 .cap p,#sc2 .cap p{text-shadow:none;background:rgba(5,7,11,.55);border-radius:10px;padding:6px 10px}
 }
 #horseArt{z-index:-2}
 
@@ -1009,17 +1006,127 @@ footer .i{width:var(--wide);margin:0 auto;font-size:12px;color:var(--p4);line-he
 <div id="bar"></div>
 
 <!-- ═══════════ ВРАТА ═══════════ -->
+<style>
+/* ═══ v3: преамбула-слайды, конь 4:3, единый ядерный блок ═══ */
+#pre{background:rgba(4,6,10,.7);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+body.pre-on #hero > div.in,body.pre-on #hero .cue,body.pre-on header,body.pre-on #menuBtn,body.pre-on #satwrap{opacity:0!important;transition:opacity .9s var(--e)}
+#pre .pin{max-width:900px;width:100%}
+#pre .slides{position:relative;min-height:9.2em;margin:0 0 var(--s4)}
+#pre .sl{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%) translateY(14px);opacity:0;
+  transition:opacity .7s var(--e),transform .7s var(--e);font-family:var(--serif);font-style:italic;
+  font-size:clamp(23px,4.4vw,44px);line-height:1.28;margin:0;color:var(--paper);text-shadow:0 4px 40px rgba(0,0,0,.7)}
+#pre .sl.on{opacity:1;transform:translateY(-50%)}
+#pre .sl.out{opacity:0;transform:translateY(-50%) translateY(-12px)}
+#pre .sl .gk{color:var(--accent-lit);font-style:normal;letter-spacing:.02em}
+#pre .sl small{display:block;margin-top:.55em;font-family:var(--sans);font-style:normal;font-size:clamp(12px,1.5vw,14px);
+  letter-spacing:.16em;text-transform:uppercase;color:var(--p3);font-weight:700}
+#pre .dots{display:flex;justify-content:center;gap:8px;margin-bottom:var(--s4)}
+#pre .dots i{width:22px;height:2px;background:rgba(240,235,226,.18);border-radius:2px;overflow:hidden;position:relative}
+#pre .dots i::after{content:'';position:absolute;inset:0;background:var(--accent);transform:scaleX(0);transform-origin:left}
+#pre .dots i.done::after{transform:scaleX(1)}
+#pre .dots i.run::after{animation:dotrun var(--sd,3.2s) linear forwards}
+@keyframes dotrun{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+#pre .pacts{opacity:0;animation:none;transition:opacity .8s var(--e);pointer-events:none}
+#pre.ready .pacts{opacity:1;pointer-events:auto}
+#pre .skip{position:absolute;right:calc(var(--sr,0px) + 18px);bottom:calc(var(--sb) + 18px);background:none;border:0;
+  color:var(--p4);font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;cursor:pointer;padding:10px}
+#pre.ready .skip{display:none}
+@media(prefers-reduced-motion:reduce){#pre .sl{transition:none}#pre .dots i.run::after{animation:none;transform:scaleX(1)}}
+
+/* конь: кадр 4:3 вместо полноэкранного квадрата, город в кадре */
+#sc1 .st{display:grid;place-items:center;align-content:center}
+#sc1 .fr{position:relative;width:min(100vw - 24px,calc((100svh - 190px) * 4 / 3),1040px);aspect-ratio:4/3;
+  border-radius:14px;overflow:hidden;isolation:isolate;box-shadow:0 30px 100px rgba(0,0,0,.6);background:#05070b}
+#sc1 .fr video,#sc1 .fr canvas,#sc1 .fr .stills{position:absolute;inset:0;width:100%!important;height:100%!important;
+  object-fit:cover!important;object-position:center center!important;z-index:0;border-radius:14px}
+#sc1 .fr .grade{position:absolute;inset:0;z-index:1;border-radius:14px;
+  background:linear-gradient(180deg,rgba(5,8,14,.28),rgba(5,8,14,0) 30%,rgba(5,8,14,0) 70%,rgba(5,8,14,.55))}
+#sc1 .fr::after{content:'';position:absolute;inset:0;border-radius:14px;z-index:2;pointer-events:none;border:1px solid rgba(240,235,226,.09)}
+#sc1 .cap{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(var(--sb) + 3.5vh)!important;z-index:8;padding:0;width:min(100% - 2rem,720px)}
+#sc1 .cap p{text-shadow:0 3px 22px rgba(0,0,0,.95);background:none;padding:0}
+@media(max-width:820px){
+  #sc1 .fr{width:min(100vw - 20px,calc((100svh - 230px) * 4 / 3))}
+  #sc1 .cap p{font-size:clamp(18px,5vw,24px)}
+}
+#horseArt{z-index:0}
+
+/* ═══ ядерный блок: одно видео + инфографика, синхронные ═══ */
+.nuke{width:var(--wide);margin:var(--s5) auto 0}
+.nk-frame{position:relative;width:min(100%,900px);margin:0 auto;aspect-ratio:4/3;border-radius:16px;overflow:hidden;
+  background:#05070b;box-shadow:0 40px 120px rgba(0,0,0,.6);isolation:isolate;cursor:pointer;
+  -webkit-tap-highlight-color:transparent}
+.nk-frame video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;z-index:0}
+.nk-grade{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(5,8,14,.55) 0%,rgba(5,8,14,0) 26%,rgba(5,8,14,0) 62%,rgba(5,8,14,.72) 100%)}
+.nk-frame::after{content:'';position:absolute;inset:0;border-radius:16px;z-index:6;pointer-events:none;border:1px solid rgba(240,235,226,.09)}
+.nk-clock{position:absolute;left:18px;top:14px;z-index:4;font-family:var(--sans);font-variant-numeric:tabular-nums;
+  display:flex;align-items:baseline;gap:8px;text-shadow:0 2px 12px rgba(0,0,0,.9)}
+.nk-clock .l{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--p3);font-weight:800}
+.nk-clock b{font-size:clamp(18px,2.6vw,26px);color:var(--paper);font-weight:600;letter-spacing:-.01em;min-width:5ch}
+.nk-stage{position:absolute;left:18px;bottom:16px;z-index:4;text-align:left;text-shadow:0 2px 12px rgba(0,0,0,.9)}
+.nk-stage .n{display:block;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--p3);font-weight:800}
+.nk-stage b{display:block;font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(20px,3vw,30px);
+  color:var(--bronze);line-height:1.1;margin-top:3px}
+.nk-hs{position:absolute;left:var(--x);top:var(--y);z-index:5;opacity:0;transform:translate(-50%,-50%) scale(.9);
+  transition:opacity .5s var(--e),transform .5s var(--e);pointer-events:none;
+  display:flex;align-items:center;gap:10px;white-space:nowrap}
+.nk-hs.on{opacity:1;transform:translate(-50%,-50%)}
+.nk-hs i{display:block;width:13px;height:13px;border-radius:50%;border:1.5px solid var(--accent-lit);position:relative;flex:none}
+.nk-hs i::after{content:'';position:absolute;inset:3.5px;border-radius:50%;background:var(--accent-lit)}
+.nk-hs i::before{content:'';position:absolute;inset:-8px;border-radius:50%;border:1px solid rgba(224,139,87,.35);animation:hsp 2.6s ease-out infinite}
+.nk-hs span{font-family:var(--sans);font-size:clamp(11px,1.4vw,13px);font-weight:700;letter-spacing:.06em;color:var(--paper);
+  text-shadow:0 2px 10px rgba(0,0,0,.95);padding:5px 9px;border-radius:8px;background:rgba(5,8,14,.55);backdrop-filter:blur(4px)}
+.nk-hs.l{flex-direction:row-reverse}
+.nk-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5;width:72px;height:72px;border-radius:50%;
+  border:1.5px solid rgba(240,235,226,.6);background:rgba(5,8,14,.45);backdrop-filter:blur(6px);color:var(--paper);
+  display:grid;place-items:center;cursor:pointer;transition:opacity .35s,transform .35s;font-size:0}
+.nk-play::after{content:'';display:block;width:0;height:0;border-style:solid;border-width:13px 0 13px 22px;
+  border-color:transparent transparent transparent var(--paper);margin-left:5px}
+.nk-play.re::after{content:'↺';border:0;width:auto;height:auto;font-size:30px;line-height:1;margin:0;color:var(--paper)}
+.nk-frame.playing .nk-play{opacity:0;transform:translate(-50%,-50%) scale(.8);pointer-events:none}
+.nk-bar{width:min(100%,900px);margin:14px auto 0;display:grid;grid-template-columns:repeat(8,1fr);gap:4px}
+.nk-bar button{position:relative;height:38px;border:0;background:none;cursor:pointer;padding:0;text-align:left;color:var(--p4);
+  font-family:var(--sans);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:800;overflow:hidden}
+.nk-bar button::before{content:'';position:absolute;left:0;right:0;top:0;height:2px;background:rgba(240,235,226,.14);border-radius:2px}
+.nk-bar button::after{content:'';position:absolute;left:0;top:0;height:2px;width:100%;background:var(--bronze);border-radius:2px;
+  transform:scaleX(var(--f,0));transform-origin:left;transition:transform .12s linear}
+.nk-bar button span{position:absolute;left:0;right:2px;bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nk-bar button.on{color:var(--bronze)}
+.nk-bar button.done{color:var(--p3)}
+.nk-desc{width:min(100%,900px);margin:12px auto 0;min-height:3.2em;font-size:clamp(14.5px,1.7vw,16.5px);line-height:1.55;color:var(--p2)}
+.nk-desc b{color:var(--bronze);font-weight:600}
+.nk-desc .sim{display:inline-block;margin-left:.6em;font-family:var(--sans);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--p4);font-weight:800}
+.nk-note{width:min(100%,900px);margin:var(--s3) auto 0;font-size:12.5px;color:var(--p4)}
+@media(max-width:820px){
+  .nuke{width:100vw;max-width:100vw;margin-left:calc(50% - 50vw);margin-right:0}
+  .nk-frame{border-radius:0;width:100%}.nk-frame::after{border-radius:0}
+  .nk-hs{flex-direction:column!important;gap:6px;white-space:normal;max-width:58vw;text-align:center;left:clamp(30%,var(--x),70%)}
+  .nk-hs span{line-height:1.25}
+  .nk-bar{grid-template-columns:repeat(4,1fr);padding:0 14px}
+  .nk-bar button{height:44px;font-size:9px}
+  .nk-bar button span{white-space:normal;line-height:1.15;bottom:3px;right:4px}
+  .nk-desc,.nk-note{padding:0 14px}
+  .nk-clock{left:12px;top:10px}.nk-stage{left:12px;bottom:12px}
+  #sc1 .fr{margin-top:-6svh}
+  .nk-hs span{font-size:11px;padding:4px 7px}
+}
+</style>
+
 <div id="pre">
   <div class="pin">
-    <blockquote>
-      <p><span class="w">«Все странники и&nbsp;нищие&nbsp;—</span> <span class="w w2">от&nbsp;Зевса».</span></p>
-      <cite>Гомер · «Одиссея» · песнь четырнадцатая</cite>
-    </blockquote>
+    <div class="slides" id="preSl">
+      <p class="sl">«Мужа мне, Муза, поведай…» — так начинается «Одиссея».<small>Гомер · Песнь первая · строка 1</small></p>
+      <p class="sl">Пятое слово этой строки — <span class="gk">πολύτροπος</span>.<small>буквально — «много-поворотный»</small></p>
+      <p class="sl">Его переводят двумя способами.<br>«Много повидавший» — жертва.<br>«На многое способный» — хитрец.</p>
+      <p class="sl">Один герой. Одно слово.<br>От того, как его прочесть, зависит — кто виноват.</p>
+    </div>
+    <div class="dots" id="preDots"><i></i><i></i><i></i><i></i></div>
     <div class="pacts">
       <button id="preGo" class="gbtn primary"><b>Войти</b><small>со звуком</small></button>
       <button id="preMute" class="pmute">войти без звука</button>
     </div>
   </div>
+  <button class="skip" id="preSkip">пропустить</button>
 </div>
 
 <div id="gate" class="wait">
@@ -1210,11 +1317,13 @@ footer .i{width:var(--wide);margin:0 auto;font-size:12px;color:var(--p4);line-he
     <p>Дальше произошло то, чего механизм не предусматривал. Дар оказался полым.</p>
   </div>
 </section>
-<section class="scene" id="sc1" style="height:320svh">
+<section class="scene" id="sc1" style="height:230svh">
   <div class="st">
-    <video id="scrub1" data-src="assets/scrub-horse.mp4" muted playsinline preload="auto" aria-hidden="true"></video>
-    <canvas class="fallback" id="horseArt" aria-hidden="true"></canvas>
-    <div class="grade"></div>
+    <div class="fr">
+      <video id="scrub1" data-src="assets/scrub-horse.mp4" muted playsinline preload="auto" aria-hidden="true"></video>
+      <canvas class="fallback" id="horseArt" aria-hidden="true"></canvas>
+      <div class="grade"></div>
+    </div>
     <div class="bars t"></div><div class="bars b"></div>
     <div class="cap">
       <p data-i="0" class="on">Утро. Греки ушли. На берегу — подношение.</p>
@@ -1343,76 +1452,32 @@ footer .i{width:var(--wide);margin:0 auto;font-size:12px;color:var(--p4);line-he
     <p>Ниже — то, что в «Оппенгеймере» показано полторы минуты и без единого слова. Взгляд сверху, с высоты нескольких километров: так видно не только вспышку, но и то, что она делает с равниной. Прокручивайте страницу — время идёт вместе с вами, а по ходу подписаны детали, которые обычно проскакивают мимо.</p>
   </div>
 </section>
-<section class="scene" id="sc2" style="height:600svh">
-  <div class="st">
-    <div class="sq">
-      <video id="scrub2" data-src="assets/scrub-boom.mp4" muted playsinline preload="auto" aria-hidden="true"></video>
-      <canvas class="fallback" id="boomScrubCv" width="900" height="900" aria-hidden="true"></canvas>
-      <div class="grade"></div>
-
-      <div class="hs" data-from=".02" data-to=".08" style="--x:50%;--y:48%;--xn:50;--yn:48">
-        <i></i><div class="lab"><b>Точка ноль</b><span>Свет уже есть, звука ещё нет. Первые доли миллисекунды ударная волна остаётся внутри светящегося купола.</span></div></div>
-
-      <div class="hs l" data-from=".08" data-to=".14" style="--x:32%;--y:76%;--xn:32;--yn:76">
-        <i></i><div class="lab"><b>Свет доходит первым</b><span>Равнина освещена до самого горизонта раньше, чем что-либо успевает произойти. Каждый дом и столб отбрасывает длинную тень строго от эпицентра — по этим теням потом и считали расстояния.</span></div></div>
-
-      <div class="hs" data-from=".19" data-to=".25" style="--x:50%;--y:45%;--xn:50;--yn:45">
-        <i></i><div class="lab"><b>Огненный шар</b><span>Температура в центре выше, чем на поверхности Солнца. Воздух не горит — он светится сам.</span></div></div>
-
-      <div class="hs l hi" data-from=".13" data-to=".19" style="--x:40%;--y:44%;--xn:40;--yn:44">
-        <i></i><div class="lab"><b>Двойная вспышка</b><span>Яркость на мгновение падает и снова нарастает: расширяющийся фронт ударной волны становится непрозрачным и на несколько миллисекунд заслоняет свечение изнутри. По этому двойному проблеску ядерный взрыв отличают от любого другого — спутниковые датчики ищут именно его.</span></div></div>
-
-      <div class="hs" data-from=".25" data-to=".31" style="--x:62%;--y:50%;--xn:62;--yn:50">
-        <i></i><div class="lab"><b>Отрыв волны</b><span>Фронт давления обгоняет свечение и уходит вперёд сам. С этой секунды разрушает уже он, а не свет.</span></div></div>
-
-      <div class="hs l" data-from=".36" data-to=".43" style="--x:70%;--y:63%;--xn:70;--yn:63">
-        <i></i><div class="lab"><b>Пылевое кольцо</b><span>Сверху ударная волна не видна — видно то, что она делает. Тёмное кольцо, бегущее по равнине быстрее звука, это не дым, а сорванный с земли грунт.</span></div></div>
-
-      <div class="hs hi" data-from=".30" data-to=".37" style="--x:30%;--y:36%;--xn:30;--yn:36">
-        <i></i><div class="lab"><b>Конденсационный купол</b><span>За фронтом давление резко падает, и влага в воздухе мгновенно превращается в туман. Полупрозрачная полусфера вокруг взрыва — обыкновенная роса.</span></div></div>
-
-      <div class="hs l" data-from=".43" data-to=".50" style="--x:50%;--y:80%;--xn:50;--yn:80">
-        <i></i><div class="lab"><b>Городок</b><span>Дома складываются один за другим, волной от центра, и все — в одну сторону. По тому, что уцелело на каком расстоянии, и считали, что бывает с обычной улицей.</span></div></div>
-
-      <div class="hs hi" data-from=".50" data-to=".62" style="--x:55%;--y:55%;--xn:55;--yn:55">
-        <i></i><div class="lab"><b>Столб</b><span>Всплывающий шар тянет за собой с земли всё, что успел поднять. Именно эта пыль потом выпадет обратно — и будет выпадать годами.</span></div></div>
-
-      <div class="hs l hi" data-from=".76" data-to=".88" style="--x:40%;--y:24%;--xn:40;--yn:24">
-        <i></i><div class="lab"><b>Шляпка</b><span>Облако доходит до высоты, где перестаёт быть легче окружающего воздуха, и растекается вбок. Форма гриба — просто след границы тропосферы.</span></div></div>
-
-      <div class="hs hi" data-from=".90" data-to="1.01" style="--x:58%;--y:13%;--xn:58;--yn:13">
-        <i></i><div class="lab"><b>Дальше</b><span>Облако поднимается ещё несколько минут. Всё, что имело значение, произошло в первую секунду.</span></div></div>
-    </div>
-
-    <div class="bars t"></div><div class="bars b"></div>
-
-    <div class="cap">
-      <p data-i="0" class="on">16 июля 1945 года, 5:29 утра. Пустыня Хорнада-дель-Муэрто.</p>
-      <p data-i="1">Задачу решали три года лучшие физики своего времени.</p>
-      <p data-i="2">Она была решена блестяще.</p>
-      <p data-i="3">Домов внизу в Тринити не было. Их построили потом — специально, чтобы посмотреть.</p>
-      <p data-i="4">Через три недели — Хиросима. Отменить решённую задачу нельзя.</p>
-    </div>
-  </div>
-</section>
 <section class="stage" style="padding-top:var(--s6)">
   <div class="col">
-    <p style="font-size:13px;color:var(--p4);max-width:72ch">Кадр собран заново средствами ИИ: это не хроника. Городка внизу под Тринити не было — там стояла одна башня посреди пустыни. Кварталы из обычных каркасных домов, машин и манекенов строили позже, на полигоне в Неваде, в операциях «Дорстеп» и «Кью» 1953 и 1955 годов, — специально чтобы посмотреть, что взрыв делает с обыкновенной улицей. Здесь эти две реальности сведены в один кадр намеренно.</p>
+    
     <p>Конь — это Тринити «Одиссеи». Ход, придуманный самым умным человеком в кадре; ход, который срабатывает идеально; ход, после которого нельзя вернуться в прежний мир, потому что прежнего мира больше нет. Оба фильма построены так, что триумф происходит рано, а всё остальное экранное время — это жизнь внутри последствий.</p>
     <p>Разница только в масштабе поломки. В «Одиссее» ломается правило, на котором держалось доверие между чужими. В «Оппенгеймере» — допущение, что войну можно проиграть и остаться. И там, и там назад дороги нет: то, что узнали и сделали, обратно уже не забрать.</p>
-    <p>Ниже — стадии ядерного взрыва одним планом: от стальной башни до шляпки на тропопаузе. Названия стадий сменяются по ходу; любую можно вызвать кнопкой и пересмотреть. Это единственное место во всей истории, где время можно отматывать.</p>
+    <p>Ниже — стадии ядерного взрыва одним планом: от стальной башни до шляпки на тропопаузе. Часы в углу идут не по секундомеру, а по порядкам величин — от миллисекунд до минут; стадии сменяются по ходу, любую можно вызвать на шкале и пересмотреть. Это единственное место во всей истории, где время можно отматывать.</p>
   </div>
 
-  <div class="boom-wrap rv">
-    <video id="boomV" src="assets/scrub-boom.mp4" playsinline muted preload="metadata"
-      style="width:100%;max-width:560px;aspect-ratio:1/1;display:block;margin:0 auto;border-radius:16px;background:#000"></video>
-    <div class="boom-ui" style="max-width:560px;margin:14px auto 0">
-      <button class="boom-play" id="bvPlay">▶ Смотреть</button>
-      <span class="boom-t" id="bvT">28 секунд · стадии сменяются сами</span>
+    <div class="nuke rv" id="nuke">
+    <div class="nk-frame" id="nkFrame">
+      <video id="nkV" src="assets/nuke-43.mp4" poster="assets/nuke-poster.jpg" playsinline muted preload="metadata" aria-label="Стадии ядерного взрыва"></video>
+      <div class="nk-grade"></div>
+      <div class="nk-clock"><span class="l">t =</span><b id="nkT">−4,0 с</b></div>
+      <div class="nk-stage"><span class="n" id="nkN">01 / 08</span><b id="nkTitle">Башня</b></div>
+      <div class="nk-hs" data-s="1" style="--x:53%;--y:54%"><i></i><span>стальная башня, 30 м</span></div>
+      <div class="nk-hs" data-s="2" style="--x:27%;--y:73%"><i></i><span>тени — строго от эпицентра</span></div>
+      <div class="nk-hs l" data-s="3" style="--x:50%;--y:52%"><i></i><span>горячее поверхности Солнца</span></div>
+      <div class="nk-hs" data-s="4" style="--x:70%;--y:58%"><i></i><span>фронт давления обгоняет свет</span></div>
+      <div class="nk-hs l" data-s="5" style="--x:34%;--y:60%"><i></i><span>кольцо — конденсат, не дым</span></div>
+      <div class="nk-hs" data-s="6" style="--x:50%;--y:44%"><i></i><span>столб тянет за собой грунт</span></div>
+      <div class="nk-hs l" data-s="7" style="--x:50%;--y:24%"><i></i><span>граница тропосферы</span></div>
+      <button class="nk-play" id="nkPlay" aria-label="Смотреть"></button>
     </div>
-    <div class="boom-marks" id="bvChips" style="max-width:560px;margin:12px auto 0"></div>
-    <div class="boom-phase" id="bvPhase" style="max-width:560px;margin:10px auto 0"></div>
-    <p style="margin-top:var(--s3);font-size:12.5px;color:var(--p4);max-width:72ch">Кадры собраны заново по опорным стадиям классической схемы Глесстона и Долана; это иллюстрация к разговору о кино, а не техническая модель.</p>
+    <div class="nk-bar" id="nkBar" role="tablist" aria-label="Стадии"></div>
+    <p class="nk-desc" id="nkDesc"></p>
+    <p class="nk-note">Кадры собраны заново средствами ИИ по опорным стадиям классической схемы Глесстона и Долана; отсчёт времени условный — по порядку величин. Это иллюстрация к разговору о кино, а не техническая модель. Городка под Тринити не было: одна башня посреди пустыни; кварталы из каркасных домов строили позже на полигоне в Неваде — специально чтобы посмотреть.</p>
   </div>
 </section>
 <section class="stage" id="s-count" data-stage="Счёт" data-songs="11" style="padding-top:var(--s6)">
@@ -2463,16 +2528,16 @@ document.addEventListener('visibilitychange',function(){
   try{ if(document.hidden){ if(thOn) AC.suspend(); } else if(thOn) AC.resume(); }catch(e){}
 });
 
-/* ═══ ПРЕАМБУЛА: вход ═══ */
+/* ═══ ПРЕАМБУЛА: слайды о пятом слове → вход ═══ */
 (function(){
   var pre=$('#pre'), gate=$('#gate'); if(!pre) return;
-  var done=false;
+  var done=false; document.body.classList.add('pre-on');
   function enter(withSound){
     if(done) return; done=true;
     try{ localStorage.setItem('zz-snd',withSound?'1':'0'); }catch(e){}
     if(withSound) cinemaOn();
     if(window.gtag) gtag('event','intro_enter',{sound:withSound?1:0});
-    pre.classList.add('gone');
+    pre.classList.add('gone'); document.body.classList.remove('pre-on');
     setTimeout(function(){ if(pre.parentNode) pre.remove(); },1200);
     if(gate && gate.dataset.skip){
       gate.remove(); document.body.classList.remove('locked');
@@ -2480,8 +2545,28 @@ document.addEventListener('visibilitychange',function(){
     sndUI();
   }
   var b1=$('#preGo'), b2=$('#preMute');
-  if(b1) b1.addEventListener('click',function(){ enter(true); });
-  if(b2) b2.addEventListener('click',function(){ enter(false); });
+  if(b1) b1.addEventListener('click',function(e){ e.stopPropagation(); enter(true); });
+  if(b2) b2.addEventListener('click',function(e){ e.stopPropagation(); enter(false); });
+  var sls=$$('#preSl .sl'), dots=$$('#preDots i'), cur=-1, tm=null, DUR=[3300,3600,4300,3600];
+  function show(k){
+    if(k>=sls.length){ ready(); return; }
+    sls.forEach(function(s,j){ s.classList.toggle('on',j===k); s.classList.toggle('out',j<k); });
+    dots.forEach(function(d,j){ d.classList.toggle('done',j<k); d.classList.toggle('run',j===k); if(j===k) d.style.setProperty('--sd',DUR[k]+'ms'); });
+    cur=k; clearTimeout(tm); tm=setTimeout(function(){ show(k+1); },DUR[k]);
+  }
+  function ready(){
+    clearTimeout(tm); if(pre.classList.contains('ready')) return;
+    sls.forEach(function(s,j){ s.classList.toggle('on',j===sls.length-1); s.classList.remove('out'); });
+    dots.forEach(function(d){ d.classList.add('done'); d.classList.remove('run'); });
+    pre.classList.add('ready');
+  }
+  pre.addEventListener('click',function(e){
+    if(e.target.closest('.pacts')) return;
+    if(pre.classList.contains('ready')) return;
+    if(cur<sls.length-1) show(cur+1); else ready();
+  });
+  var sk=$('#preSkip'); if(sk) sk.addEventListener('click',function(e){ e.stopPropagation(); ready(); });
+  if(RM) ready(); else setTimeout(function(){ show(0); },400);
 })();
 
 /* ═══ ПРОГРЕСС, ШАПКА, РЕЛЬС ═══ */
@@ -2542,6 +2627,27 @@ function loadVid(v,ok,fail){
   v.loop=true;
   loadVid(v,function(){v.classList.add('in');v.play().catch(function(){});},function(){v.remove();});
 })();
+/* iOS: скраб по currentTime стабилен, только когда файл целиком локален (blob) и видео разблокировано жестом */
+function blobify(v){
+  try{
+    if(!('fetch' in window)||!window.URL||v.dataset.blob) return; v.dataset.blob='1';
+    var src=v.currentSrc||v.src; if(!src||/^blob:/.test(src)) return;
+    fetch(src,{cache:'force-cache'}).then(function(r){ return r.ok?r.blob():null; }).then(function(b){
+      if(!b||b.size>18e6) return;
+      var t=v.currentTime, u=URL.createObjectURL(b);
+      v.onloadedmetadata=function(){ v.onloadedmetadata=null; try{ v.currentTime=t; }catch(e){} };
+      v.src=u; v.load();
+    }).catch(function(){});
+  }catch(e){}
+}
+var __vidsUnlocked=false;
+function unlockVids(){
+  if(__vidsUnlocked) return; __vidsUnlocked=true;
+  $$('.scene video').forEach(function(v){
+    try{ var p=v.play(); if(p&&p.then) p.then(function(){ v.pause(); }).catch(function(){}); else v.pause(); }catch(e){}
+  });
+}
+['touchstart','pointerdown','keydown'].forEach(function(ev){ addEventListener(ev,unlockVids,{passive:true,once:true}); });
 $$('.scene').forEach(function(sc){
   var v=sc.querySelector('video'),caps=$$('.cap p',sc),bt=$('.bars.t',sc),bb=$('.bars.b',sc);
   var spots=$$('.hs',sc),fb=sc.querySelector('.fallback');
@@ -2563,7 +2669,7 @@ $$('.scene').forEach(function(sc){
   sc.__frame=frame;
   addEventListener('scroll',function(){if(!q){q=true;requestAnimationFrame(frame);}},{passive:true});
   frame();
-  if(v) loadVid(v,function(){dur=v.duration||0;if(fb)fb.style.display='none';frame();},
+  if(v) loadVid(v,function(){dur=v.duration||0;if(fb)fb.style.display='none';frame();blobify(v);},
                 function(){v.remove();v=null;frame();});
 });
 $$('.bleed[data-img]').forEach(function(fig){
@@ -4585,6 +4691,67 @@ if(TOUCH){
  $$('#bvChips .bm').forEach(function(b){b.addEventListener('click',function(){
   v.currentTime=parseFloat(b.dataset.t)+0.05;var p=v.play();if(p&&p.catch)p.catch(function(){});
   $('#bvPlay').textContent='❚❚ Пауза';})});
+})();
+
+/* ═══ ЯДЕРНЫЙ БЛОК: одно видео + инфографика, синхронно по времени ═══ */
+(function(){
+  var v=$('#nkV'), fr=$('#nkFrame'); if(!v||!fr) return;
+  var RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ST=[
+    {t:0,    name:'Башня',        s0:-4,    s1:0,     d:'16 июля 1945 года, 5:29 утра. Пустыня Хорнада-дель-Муэрто. Стальная башня в тридцать метров — единственная вертикаль на равнине. Задачу решали три года лучшие физики своего времени.'},
+    {t:4.8,  name:'Вспышка',      s0:0,     s1:0.001, d:'Свет доходит первым. Равнина освещена до самого горизонта раньше, чем что-либо успевает произойти; каждый столб отбрасывает тень строго от эпицентра — по этим теням потом считали расстояния.'},
+    {t:9.5,  name:'Огненный шар', s0:0.001, s1:0.1,   d:'Температура в центре выше, чем на поверхности Солнца. Воздух не горит — он светится сам. Яркость на миг падает и снова растёт: по этому двойному проблеску ядерный взрыв отличают от любого другого.'},
+    {t:13.5, name:'Отрыв волны',  s0:0.1,   s1:1,     d:'Фронт давления обгоняет свечение и уходит вперёд сам. С этой секунды разрушает уже он, а не свет.'},
+    {t:17.5, name:'Кольцо',       s0:1,     s1:6,     d:'За фронтом давление резко падает, и влага в воздухе превращается в туман: полупрозрачный купол вокруг взрыва — обыкновенная роса. Тёмное кольцо по равнине — не дым, а сорванный грунт.'},
+    {t:21.5, name:'Столб',        s0:6,     s1:40,    d:'Всплывающий шар тянет за собой с земли всё, что успел поднять. Именно эта пыль потом выпадет обратно — и будет выпадать годами.'},
+    {t:25.5, name:'Шляпка',       s0:40,    s1:180,   d:'Облако доходит до высоты, где перестаёт быть легче окружающего воздуха, и растекается вбок. Форма гриба — просто след границы тропосферы.'},
+    {t:29.5, name:'Дальше',       s0:180,   s1:600,   d:'Облако поднимается ещё несколько минут. Всё, что имело значение, произошло в первую секунду. Через три недели — Хиросима: отменить решённую задачу нельзя.'}
+  ];
+  var bar=$('#nkBar'), T=$('#nkT'), N=$('#nkN'), TT=$('#nkTitle'), D=$('#nkDesc'), P=$('#nkPlay'), hs=$$('.nk-hs',fr);
+  bar.innerHTML=ST.map(function(s,i){ return '<button type="button" role="tab" data-i="'+i+'"><span>'+s.name+'</span></button>'; }).join('');
+  var btns=$$('button',bar), cur=-1, dur=33.2;
+  function fmt(s){
+    var sign=s<0?'−':'', a=Math.abs(s);
+    if(s>=0&&a<0.0001) return '0';
+    if(a<1){ var ms=a*1000; return sign+(ms<10?ms.toFixed(1):Math.round(ms)).toString().replace('.',',')+' мс'; }
+    if(a<60) return sign+(a<10?a.toFixed(1):Math.round(a)).toString().replace('.',',')+' с';
+    var m=Math.floor(a/60), r=Math.round(a-m*60); return sign+m+' мин'+(r?' '+r+' с':'');
+  }
+  function stageAt(t){ var i=0; for(var k=0;k<ST.length;k++) if(t>=ST[k].t) i=k; return i; }
+  function endOf(i){ return i+1<ST.length?ST[i+1].t:dur; }
+  function simAt(t){
+    var i=stageAt(t), s=ST[i], e=endOf(i), f=e>s.t?Math.max(0,Math.min(1,(t-s.t)/(e-s.t))):0;
+    if(s.s0<0) return s.s0+(s.s1-s.s0)*f;                       /* обратный отсчёт — линейно */
+    var a=Math.max(s.s0,1e-4), b=Math.max(s.s1,1e-4);          /* дальше — логарифмически */
+    return Math.exp(Math.log(a)+(Math.log(b)-Math.log(a))*f);
+  }
+  function setStage(i){
+    if(i===cur) return; cur=i; var s=ST[i];
+    N.textContent='0'+(i+1)+' / 0'+ST.length; TT.textContent=s.name;
+    D.innerHTML='<b>'+s.name+'.</b> '+s.d;
+    btns.forEach(function(b,j){ b.classList.toggle('on',j===i); b.classList.toggle('done',j<i); });
+    hs.forEach(function(h){ h.classList.toggle('on',parseInt(h.dataset.s,10)===i+1); });
+  }
+  function tick(){
+    var t=v.currentTime; if(v.duration) dur=v.duration;
+    setStage(stageAt(t)); T.textContent=fmt(simAt(t));
+    btns.forEach(function(b,j){ var s=ST[j].t, e=endOf(j); b.style.setProperty('--f', t<=s?0:(t>=e?1:((t-s)/(e-s)).toFixed(3))); });
+    if(!v.paused&&!v.ended) requestAnimationFrame(tick);
+  }
+  function play(){ var p=v.play(); if(p&&p.catch) p.catch(function(){}); if(window.track) track('video_play',{key:'nuke'}); }
+  v.addEventListener('play',function(){ fr.classList.add('playing'); P.classList.remove('re'); requestAnimationFrame(tick); });
+  v.addEventListener('pause',function(){ fr.classList.remove('playing'); tick(); });
+  v.addEventListener('ended',function(){ fr.classList.remove('playing'); P.classList.add('re'); tick(); });
+  v.addEventListener('seeked',tick); v.addEventListener('loadedmetadata',tick);
+  fr.addEventListener('click',function(){ fr.dataset.user='1'; if(v.ended){ v.currentTime=0; play(); } else if(v.paused) play(); else v.pause(); });
+  btns.forEach(function(b){ b.addEventListener('click',function(){ fr.dataset.user='1'; v.currentTime=ST[parseInt(b.dataset.i,10)].t+0.05; play(); }); });
+  if('IntersectionObserver' in window && !RM){
+    new IntersectionObserver(function(es){ es.forEach(function(e){
+      if(e.isIntersecting&&e.intersectionRatio>=.6){ if(v.paused&&!v.ended&&!fr.dataset.user) play(); }
+      else if(!e.isIntersecting&&!v.paused){ v.pause(); }
+    }); },{threshold:[0,.6]}).observe(fr);
+  }
+  setStage(0); T.textContent=fmt(-4);
 })();
 
 /* ── спутник-миникарта ── */
