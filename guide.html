@@ -7,7 +7,8 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-9BLFSZP6X2"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}
-gtag('js',new Date());gtag('config','G-9BLFSZP6X2',{allow_google_signals:false,allow_ad_personalization_signals:false});
+gtag('js',new Date());gtag('set',{build:'v3-2026-09',content_group:'journey'});gtag('config','G-9BLFSZP6X2',{allow_google_signals:false,allow_ad_personalization_signals:false});
+window.zzEv=function(n,p){try{gtag('event',n,p||{});}catch(e){}};
 try{var u=localStorage.getItem('zz-uid');if(!u){u='w-'+Math.random().toString(36).slice(2,10)+Date.now().toString(36);localStorage.setItem('zz-uid',u)}gtag('set','user_id',u);}catch(e){}
 addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[data-ga]');if(a)gtag('event','cta_click',{cta:a.dataset.ga});},true);
 </script>
@@ -2455,7 +2456,7 @@ applySp();
 
 /* ═══ МУЗЫКА: тихий луп (Web Audio, бесшовно по loopStart/loopEnd) ═══ */
 var AC=null,thGain=null,thBuf=null,thSrc=null,thOn=false;
-var TH_URL='assets/theme.mp3', TH_LS=1.0, TH_LE=45.0, TH_VOL=0.42;
+var TH_URL='assets/theme.mp3?v=3', TH_LS=0.0, TH_LE=48.0, TH_VOL=0.34;
 function sndUI(){ var b=$('#sndBtn'); if(!b) return; b.hidden=false;
   b.classList.toggle('on',thOn); b.setAttribute('aria-pressed',String(thOn));
   b.querySelector('span').textContent = thOn?'♬':'♪'; }
@@ -2493,7 +2494,7 @@ function themeOff(){
 }
 window.__startTheme=themeOn;
 /* кино-саундтрек хиро (60с, один раз, синхронно с видео) → потом тихий луп */
-var cinBuf=null,cinSrc=null,CIN_URL='assets/hero-score.mp3';
+var cinBuf=null,cinSrc=null,CIN_URL='assets/hero-score.mp3?v=3';
 function cinemaOn(){
   try{
     if(!AC){ var C=window.AudioContext||window.webkitAudioContext; if(!C) return;
@@ -2550,12 +2551,14 @@ document.addEventListener('visibilitychange',function(){
   var sls=$$('#preSl .sl'), dots=$$('#preDots i'), cur=-1, tm=null, DUR=[3300,3600,4300,3600];
   function show(k){
     if(k>=sls.length){ ready(); return; }
+    zzEv('pre_slide',{index:k+1});
     sls.forEach(function(s,j){ s.classList.toggle('on',j===k); s.classList.toggle('out',j<k); });
     dots.forEach(function(d,j){ d.classList.toggle('done',j<k); d.classList.toggle('run',j===k); if(j===k) d.style.setProperty('--sd',DUR[k]+'ms'); });
     cur=k; clearTimeout(tm); tm=setTimeout(function(){ show(k+1); },DUR[k]);
   }
-  function ready(){
+  function ready(via){
     clearTimeout(tm); if(pre.classList.contains('ready')) return;
+    zzEv('pre_done',{via:via||'auto',slides_seen:cur+1});
     sls.forEach(function(s,j){ s.classList.toggle('on',j===sls.length-1); s.classList.remove('out'); });
     dots.forEach(function(d){ d.classList.add('done'); d.classList.remove('run'); });
     pre.classList.add('ready');
@@ -2563,9 +2566,9 @@ document.addEventListener('visibilitychange',function(){
   pre.addEventListener('click',function(e){
     if(e.target.closest('.pacts')) return;
     if(pre.classList.contains('ready')) return;
-    if(cur<sls.length-1) show(cur+1); else ready();
+    if(cur<sls.length-1){ zzEv('pre_tap',{from:cur+1}); show(cur+1); } else ready('tap');
   });
-  var sk=$('#preSkip'); if(sk) sk.addEventListener('click',function(e){ e.stopPropagation(); ready(); });
+  var sk=$('#preSkip'); if(sk) sk.addEventListener('click',function(e){ e.stopPropagation(); zzEv('pre_skip',{at:cur+1}); ready('skip'); });
   if(RM) ready(); else setTimeout(function(){ show(0); },400);
 })();
 
@@ -2589,6 +2592,7 @@ var rails=[]; /* рельс на 24 песни строится в новом б
 })();
 function share(){
   var d={title:document.title,text:'Ксения как ключ к «Одиссее» Нолана',url:location.href};
+  zzEv('share_click',{method:navigator.share?'native':'clipboard'});
   if(navigator.share) navigator.share(d).catch(function(){});
   else if(navigator.clipboard) navigator.clipboard.writeText(location.href);
 }
@@ -2625,7 +2629,9 @@ function loadVid(v,ok,fail){
   if(RM){v.remove();return;}
   /* хиро-фильм 60с: всегда по кругу */
   v.loop=true;
-  loadVid(v,function(){v.classList.add('in');v.play().catch(function(){});},function(){v.remove();});
+  loadVid(v,function(){v.classList.add('in');v.play().catch(function(){});zzEv('hero_video',{state:'loaded'});
+    var seen={};v.addEventListener('timeupdate',function(){var t=v.currentTime;[15,30,45,59].forEach(function(m){if(t>=m&&!seen[m]){seen[m]=1;zzEv('hero_watch',{sec:m});}});});},
+    function(){v.remove();zzEv('hero_video',{state:'failed'});});
 })();
 /* iOS: скраб по currentTime стабилен, только когда файл целиком локален (blob) и видео разблокировано жестом */
 function blobify(v){
@@ -2664,6 +2670,7 @@ $$('.scene').forEach(function(sc){
     });
     if(dur && !window.__noScrub){var w=Math.min(1,p/0.92)*Math.max(0,dur-0.04); if(Math.abs(w-at)>.02){at=w;try{v.currentTime=w;}catch(e){}}}
     sc.__p=p;
+    if(!sc.__ga) sc.__ga={};[25,50,75,100].forEach(function(m){ if(p*100>=m-0.5&&!sc.__ga[m]){ sc.__ga[m]=1; zzEv('scene_progress',{scene:sc.id,pct:m}); } });
     if(fb&&fb.__draw) fb.__draw(p);
   }
   sc.__frame=frame;
@@ -4726,7 +4733,8 @@ if(TOUCH){
     return Math.exp(Math.log(a)+(Math.log(b)-Math.log(a))*f);
   }
   function setStage(i){
-    if(i===cur) return; cur=i; var s=ST[i];
+    if(i===cur) return; var prev=cur; cur=i; var s=ST[i];
+    if(prev>=0) zzEv('nuke_stage',{stage:s.name,index:i+1});
     N.textContent='0'+(i+1)+' / 0'+ST.length; TT.textContent=s.name;
     D.innerHTML='<b>'+s.name+'.</b> '+s.d;
     btns.forEach(function(b,j){ b.classList.toggle('on',j===i); b.classList.toggle('done',j<i); });
@@ -4738,20 +4746,41 @@ if(TOUCH){
     btns.forEach(function(b,j){ var s=ST[j].t, e=endOf(j); b.style.setProperty('--f', t<=s?0:(t>=e?1:((t-s)/(e-s)).toFixed(3))); });
     if(!v.paused&&!v.ended) requestAnimationFrame(tick);
   }
-  function play(){ var p=v.play(); if(p&&p.catch) p.catch(function(){}); if(window.track) track('video_play',{key:'nuke'}); }
+  var playedOnce=false;
+  function play(via){ var p=v.play(); if(p&&p.catch) p.catch(function(){}); zzEv('nuke_play',{via:via||'tap',first:playedOnce?0:1}); if(!playedOnce&&window.track) track('video_play',{key:'nuke'}); playedOnce=true; }
   v.addEventListener('play',function(){ fr.classList.add('playing'); P.classList.remove('re'); requestAnimationFrame(tick); });
   v.addEventListener('pause',function(){ fr.classList.remove('playing'); tick(); });
-  v.addEventListener('ended',function(){ fr.classList.remove('playing'); P.classList.add('re'); tick(); });
+  v.addEventListener('ended',function(){ fr.classList.remove('playing'); P.classList.add('re'); tick(); zzEv('nuke_complete'); });
   v.addEventListener('seeked',tick); v.addEventListener('loadedmetadata',tick);
-  fr.addEventListener('click',function(){ fr.dataset.user='1'; if(v.ended){ v.currentTime=0; play(); } else if(v.paused) play(); else v.pause(); });
-  btns.forEach(function(b){ b.addEventListener('click',function(){ fr.dataset.user='1'; v.currentTime=ST[parseInt(b.dataset.i,10)].t+0.05; play(); }); });
+  fr.addEventListener('click',function(){ fr.dataset.user='1'; if(v.ended){ v.currentTime=0; play('replay'); } else if(v.paused) play('tap'); else { v.pause(); zzEv('nuke_pause',{at:Math.round(v.currentTime)}); } });
+  btns.forEach(function(b){ b.addEventListener('click',function(){ fr.dataset.user='1'; var k=parseInt(b.dataset.i,10); zzEv('nuke_seek',{stage:ST[k].name,index:k+1}); v.currentTime=ST[k].t+0.05; play('stage'); }); });
   if('IntersectionObserver' in window && !RM){
     new IntersectionObserver(function(es){ es.forEach(function(e){
-      if(e.isIntersecting&&e.intersectionRatio>=.6){ if(v.paused&&!v.ended&&!fr.dataset.user) play(); }
+      if(e.isIntersecting&&e.intersectionRatio>=.6){ if(v.paused&&!v.ended&&!fr.dataset.user) play('auto'); }
       else if(!e.isIntersecting&&!v.paused){ v.pause(); }
     }); },{threshold:[0,.6]}).observe(fr);
   }
   setStage(0); T.textContent=fmt(-4);
+})();
+
+/* ═══ АНАЛИТИКА: главы и глубина прокрутки ═══ */
+(function(){
+  var seenCh={}, secs=$$('[data-stage]');
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){ es.forEach(function(e){
+      if(!e.isIntersecting) return; var n=e.target.dataset.stage||e.target.id; if(seenCh[n]) return; seenCh[n]=1;
+      zzEv('chapter_view',{chapter:n,index:secs.indexOf(e.target)+1,songs:e.target.dataset.songs||''});
+    }); },{threshold:0.35});
+    secs.forEach(function(x){ io.observe(x); });
+  }
+  var marks=[25,50,75,90,100], hit={}, q=false;
+  function depth(){ q=false; var d=document.documentElement, m=d.scrollHeight-d.clientHeight; if(m<=0) return;
+    var pct=(d.scrollTop||document.body.scrollTop)/m*100;
+    marks.forEach(function(k){ if(pct>=k-0.5&&!hit[k]){ hit[k]=1; zzEv('scroll_depth',{pct:k}); } }); }
+  addEventListener('scroll',function(){ if(!q){ q=true; requestAnimationFrame(depth); } },{passive:true});
+  var t0=Date.now(), sent={};
+  setInterval(function(){ if(document.hidden) return; var m=Math.round((Date.now()-t0)/60000);
+    [1,3,5,10].forEach(function(k){ if(m>=k&&!sent[k]){ sent[k]=1; zzEv('time_on_page',{min:k}); } }); },15000);
 })();
 
 /* ── спутник-миникарта ── */
