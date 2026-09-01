@@ -72,6 +72,35 @@ b,strong{font-weight:650;color:var(--paper)}
 .gbtn.primary:hover{background:var(--accent);color:var(--abyss)}
 .gbtn.primary:hover b,.gbtn.primary:hover small{color:var(--abyss)}
 
+/* ═══ ПРЕАМБУЛА: эпиграф перед входом ═══ */
+#pre{position:fixed;inset:0;z-index:220;background:#04060a;display:grid;place-items:center;
+  padding:calc(var(--st) + 24px) 24px calc(var(--sb) + 24px);text-align:center;
+  transition:opacity 1.1s ease,visibility 1.1s}
+#pre.gone{opacity:0;visibility:hidden}
+#pre .pin{max-width:840px}
+#pre blockquote{margin:0 0 var(--s5)}
+#pre blockquote p{font-family:var(--serif);font-style:italic;font-size:clamp(28px,5.6vw,56px);
+  line-height:1.24;margin:0;color:var(--paper)}
+#pre blockquote p .w{display:inline-block;opacity:0;animation:preIn 2.2s ease forwards}
+#pre blockquote p .w2{animation-delay:1.5s}
+#pre blockquote cite{display:block;margin-top:var(--s3);font-family:var(--sans);font-style:normal;
+  font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--p3);font-weight:700;
+  opacity:0;animation:preIn 1.8s ease 3s forwards}
+#pre .pacts{display:flex;flex-direction:column;align-items:center;gap:16px;
+  opacity:0;animation:preIn 1.6s ease 4s forwards}
+#pre .pmute{background:none;border:none;color:var(--p4);font-size:12.5px;letter-spacing:.05em;
+  text-decoration:underline;text-decoration-style:dotted;text-underline-offset:4px;cursor:pointer;padding:8px}
+#pre .pmute:hover{color:var(--p2)}
+@keyframes preIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion: reduce){
+  #pre blockquote p .w,#pre blockquote cite,#pre .pacts{animation:none;opacity:1;transform:none}}
+#gate.wait{opacity:0;visibility:hidden;pointer-events:none}
+#gate .geye{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--p3);
+  font-weight:700;margin:0 0 16px}
+#gate .gq{font-family:var(--serif);font-size:clamp(26px,5vw,46px);line-height:1.2;
+  color:var(--paper);margin:0 0 var(--s4);font-weight:600}
+#sndBtn{width:38px;min-width:38px;padding:0;justify-content:center;font-size:15px;letter-spacing:0}
+
 /* ═══ ШАПКА + РЕЛЬС ПУТИ ═══ */
 header{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;
   justify-content:space-between;gap:16px;padding:calc(var(--st) + 10px) clamp(14px,3vw,28px) 10px;
@@ -975,13 +1004,24 @@ footer .i{width:var(--wide);margin:0 auto;font-size:12px;color:var(--p4);line-he
 <div id="bar"></div>
 
 <!-- ═══════════ ВРАТА ═══════════ -->
-<div id="gate">
-  <div class="in">
+<div id="pre">
+  <div class="pin">
     <blockquote>
-      <p>«Мы предали всё, что свято между людьми».</p>
-      <cite>Реплика Одиссея в фильме Нолана</cite>
+      <p><span class="w">«Все странники и&nbsp;нищие&nbsp;—</span> <span class="w w2">от&nbsp;Зевса».</span></p>
+      <cite>Гомер · «Одиссея» · песнь четырнадцатая</cite>
     </blockquote>
-    <p class="ask">Дальше — разбор фильма, который вышел месяц назад. Скажите, как с вами говорить: беречь повороты сюжета или можно всё?</p>
+    <div class="pacts">
+      <button id="preGo" class="gbtn primary"><b>Войти</b><small>со звуком</small></button>
+      <button id="preMute" class="pmute">войти без звука</button>
+    </div>
+  </div>
+</div>
+
+<div id="gate" class="wait">
+  <div class="in">
+    <p class="geye">Перед отплытием</p>
+    <h2 class="gq">Вы уже смотрели фильм?</h2>
+    <p class="ask">Дальше — разбор «Одиссеи» Нолана. Скажите, как с вами говорить: беречь повороты сюжета или можно всё?</p>
     <div class="opts">
       <button class="gbtn primary" data-sp="1"><b>Я смотрел</b><small>показывайте всё</small></button>
       <button class="gbtn" data-sp="0"><b>Ещё не смотрел</b><small>без спойлеров</small></button>
@@ -993,6 +1033,7 @@ footer .i{width:var(--wide);margin:0 auto;font-size:12px;color:var(--p4);line-he
 <header>
   <a class="brand" href="#hero">Закон <i>Зевса</i></a>
   <div class="hact">
+    <button class="chip" id="sndBtn" hidden aria-pressed="false" aria-label="Звук" title="Звук"><span>♪</span></button>
     <button class="chip" id="spBtn" aria-pressed="false"><span>Спойлеры выкл</span></button>
     <button class="chip" id="shareBtn">Поделиться</button>
   </div>
@@ -1003,7 +1044,7 @@ footer .i{width:var(--wide);margin:0 auto;font-size:12px;color:var(--p4);line-he
 <!-- ═══════════ 1 · ОБЫЧНЫЙ МИР ═══════════ -->
 <section id="hero" data-stage="Обычный мир">
   <canvas id="sea" aria-hidden="true"></canvas>
-  <video id="heroV" data-src="assets/hero-loop.mp4" muted loop playsinline autoplay preload="none" aria-hidden="true"></video>
+  <video id="heroV" data-src="assets/hero-60.mp4" muted loop playsinline autoplay preload="none" aria-hidden="true"></video>
   <div class="veil"></div>
   <div class="in">
     <p class="eyebrow">Путешествие по «Одиссее» · 2026</p>
@@ -2337,7 +2378,106 @@ $$('.sp-open').forEach(function(btn){
   });
 });
 document.body.classList.add('locked');
+/* повторный визит: выбор сохранён — гейт пропускаем, преамбула остаётся */
+var SAVED_SP=null; try{ SAVED_SP=localStorage.getItem('xenia-sp'); }catch(e){}
+if(SAVED_SP!==null){ SP = SAVED_SP==='1'; var g0=$('#gate'); if(g0) g0.dataset.skip='1'; }
 applySp();
+
+/* ═══ МУЗЫКА: тихий луп (Web Audio, бесшовно по loopStart/loopEnd) ═══ */
+var AC=null,thGain=null,thBuf=null,thSrc=null,thOn=false;
+var TH_URL='assets/theme.mp3', TH_LS=1.0, TH_LE=45.0, TH_VOL=0.42;
+function sndUI(){ var b=$('#sndBtn'); if(!b) return; b.hidden=false;
+  b.classList.toggle('on',thOn); b.setAttribute('aria-pressed',String(thOn));
+  b.querySelector('span').textContent = thOn?'♬':'♪'; }
+function themeOn(){
+  try{
+    if(!AC){ var C=window.AudioContext||window.webkitAudioContext; if(!C) return;
+      AC=new C(); thGain=AC.createGain(); thGain.gain.value=0.0001; thGain.connect(AC.destination); }
+    if(AC.state==='suspended') AC.resume();
+    var go=function(){
+      if(thOn||!thBuf) return;
+      thSrc=AC.createBufferSource(); thSrc.buffer=thBuf; thSrc.loop=true;
+      thSrc.loopStart=Math.min(TH_LS,thBuf.duration*0.5);
+      thSrc.loopEnd=Math.min(TH_LE,thBuf.duration);
+      thSrc.connect(thGain); thSrc.start(0,thSrc.loopStart);
+      thOn=true;
+      thGain.gain.cancelScheduledValues(AC.currentTime);
+      thGain.gain.setValueAtTime(0.0001,AC.currentTime);
+      thGain.gain.exponentialRampToValueAtTime(TH_VOL,AC.currentTime+3.5);
+      sndUI(); };
+    if(thBuf){ go(); return; }
+    fetch(TH_URL).then(function(r){return r.arrayBuffer();}).then(function(ab){
+      return new Promise(function(res,rej){ AC.decodeAudioData(ab,res,rej); });
+    }).then(function(b){ thBuf=b; go(); }).catch(function(){});
+  }catch(e){}
+}
+function themeOff(){
+  if(!AC||!thOn) return;
+  try{
+    thGain.gain.cancelScheduledValues(AC.currentTime);
+    thGain.gain.setValueAtTime(Math.max(0.0001,thGain.gain.value),AC.currentTime);
+    thGain.gain.exponentialRampToValueAtTime(0.0001,AC.currentTime+0.8);
+    var s=thSrc,c=cinSrc; setTimeout(function(){ try{if(s)s.stop();}catch(e){} try{if(c){c.onended=null;c.stop();}}catch(e){} },900);
+  }catch(e){}
+  thOn=false; sndUI();
+}
+window.__startTheme=themeOn;
+/* кино-саундтрек хиро (60с, один раз, синхронно с видео) → потом тихий луп */
+var cinBuf=null,cinSrc=null,CIN_URL='assets/hero-score.mp3';
+function cinemaOn(){
+  try{
+    if(!AC){ var C=window.AudioContext||window.webkitAudioContext; if(!C) return;
+      AC=new C(); thGain=AC.createGain(); thGain.gain.value=0.0001; thGain.connect(AC.destination); }
+    if(AC.state==='suspended') AC.resume();
+    var go=function(){
+      if(!cinBuf) return;
+      try{ var v=$('#heroV'); if(v){ v.currentTime=0; var p=v.play(); if(p&&p.catch)p.catch(function(){}); } }catch(e){}
+      cinSrc=AC.createBufferSource(); cinSrc.buffer=cinBuf;
+      cinSrc.connect(thGain); cinSrc.start(0);
+      thOn=true;
+      thGain.gain.cancelScheduledValues(AC.currentTime);
+      thGain.gain.setValueAtTime(0.0001,AC.currentTime);
+      thGain.gain.exponentialRampToValueAtTime(0.5,AC.currentTime+1.2);
+      cinSrc.onended=function(){ thOn=false; if(lsG('zz-snd')!=='0') themeOn(); };
+      sndUI(); };
+    if(cinBuf){ go(); return; }
+    fetch(CIN_URL).then(function(r){return r.arrayBuffer();}).then(function(ab){
+      return new Promise(function(res,rej){ AC.decodeAudioData(ab,res,rej); });
+    }).then(function(b){ cinBuf=b; go(); }).catch(function(){ themeOn(); });
+  }catch(e){}
+}
+function lsG(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+var sb=$('#sndBtn');
+if(sb) sb.addEventListener('click',function(){
+  var want=!thOn; want?themeOn():themeOff();
+  try{ localStorage.setItem('zz-snd',want?'1':'0'); }catch(e){}
+  if(window.gtag) gtag('event','sound_toggle',{on:want?1:0});
+});
+document.addEventListener('visibilitychange',function(){
+  if(!AC) return;
+  try{ if(document.hidden){ if(thOn) AC.suspend(); } else if(thOn) AC.resume(); }catch(e){}
+});
+
+/* ═══ ПРЕАМБУЛА: вход ═══ */
+(function(){
+  var pre=$('#pre'), gate=$('#gate'); if(!pre) return;
+  var done=false;
+  function enter(withSound){
+    if(done) return; done=true;
+    try{ localStorage.setItem('zz-snd',withSound?'1':'0'); }catch(e){}
+    if(withSound) cinemaOn();
+    if(window.gtag) gtag('event','intro_enter',{sound:withSound?1:0});
+    pre.classList.add('gone');
+    setTimeout(function(){ if(pre.parentNode) pre.remove(); },1200);
+    if(gate && gate.dataset.skip){
+      gate.remove(); document.body.classList.remove('locked');
+    } else if(gate){ gate.classList.remove('wait'); }
+    sndUI();
+  }
+  var b1=$('#preGo'), b2=$('#preMute');
+  if(b1) b1.addEventListener('click',function(){ enter(true); });
+  if(b2) b2.addEventListener('click',function(){ enter(false); });
+})();
 
 /* ═══ ПРОГРЕСС, ШАПКА, РЕЛЬС ═══ */
 var stages=$$('[data-stage]');
@@ -2393,6 +2533,8 @@ function loadVid(v,ok,fail){
 }
 (function(){ var v=$('#heroV'); if(!v) return;
   if(RM){v.remove();return;}
+  /* хиро-фильм 60с: всегда по кругу */
+  v.loop=true;
   loadVid(v,function(){v.classList.add('in');v.play().catch(function(){});},function(){v.remove();});
 })();
 $$('.scene').forEach(function(sc){
