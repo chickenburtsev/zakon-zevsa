@@ -73,28 +73,6 @@ b,strong{font-weight:650;color:var(--paper)}
 .gbtn.primary:hover{background:var(--accent);color:var(--abyss)}
 .gbtn.primary:hover b,.gbtn.primary:hover small{color:var(--abyss)}
 
-/* ═══ ПРЕАМБУЛА: эпиграф перед входом ═══ */
-#pre{position:fixed;inset:0;z-index:220;background:#04060a;display:grid;place-items:center;
-  padding:calc(var(--st) + 24px) 24px calc(var(--sb) + 24px);text-align:center;
-  transition:opacity 1.1s ease,visibility 1.1s}
-#pre.gone{opacity:0;visibility:hidden}
-#pre .pin{max-width:840px}
-#pre blockquote{margin:0 0 var(--s5)}
-#pre blockquote p{font-family:var(--serif);font-style:italic;font-size:clamp(28px,5.6vw,56px);
-  line-height:1.24;margin:0;color:var(--paper)}
-#pre blockquote p .w{display:inline-block;opacity:0;animation:preIn 2.2s ease forwards}
-#pre blockquote p .w2{animation-delay:1.5s}
-#pre blockquote cite{display:block;margin-top:var(--s3);font-family:var(--sans);font-style:normal;
-  font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--p3);font-weight:700;
-  opacity:0;animation:preIn 1.8s ease 3s forwards}
-#pre .pacts{display:flex;flex-direction:column;align-items:center;gap:16px;
-  opacity:0;animation:preIn 1.6s ease 4s forwards}
-#pre .pmute{background:none;border:none;color:var(--p4);font-size:12.5px;letter-spacing:.05em;
-  text-decoration:underline;text-decoration-style:dotted;text-underline-offset:4px;cursor:pointer;padding:8px}
-#pre .pmute:hover{color:var(--p2)}
-@keyframes preIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-@media(prefers-reduced-motion: reduce){
-  #pre blockquote p .w,#pre blockquote cite,#pre .pacts{animation:none;opacity:1;transform:none}}
 #gate.wait{opacity:0;visibility:hidden;pointer-events:none}
 #gate .geye{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--p3);
   font-weight:700;margin:0 0 16px}
@@ -1008,31 +986,7 @@ footer .i{width:var(--wide);margin:0 auto;font-size:12px;color:var(--p4);line-he
 
 <!-- ═══════════ ВРАТА ═══════════ -->
 <style>
-/* ═══ v3: преамбула-слайды, конь 4:3, единый ядерный блок ═══ */
-#pre{background:rgba(4,6,10,.7);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
-body.pre-on #hero > div.in,body.pre-on #hero .cue,body.pre-on header,body.pre-on #menuBtn,body.pre-on #satwrap{opacity:0!important;transition:opacity .9s var(--e)}
-#pre .pin{max-width:900px;width:100%}
-#pre .slides{position:relative;min-height:9.2em;margin:0 0 var(--s4)}
-#pre .sl{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%) translateY(14px);opacity:0;
-  transition:opacity .7s var(--e),transform .7s var(--e);font-family:var(--serif);font-style:italic;
-  font-size:clamp(23px,4.4vw,44px);line-height:1.28;margin:0;color:var(--paper);text-shadow:0 4px 40px rgba(0,0,0,.7)}
-#pre .sl.on{opacity:1;transform:translateY(-50%)}
-#pre .sl.out{opacity:0;transform:translateY(-50%) translateY(-12px)}
-#pre .sl .gk{color:var(--accent-lit);font-style:normal;letter-spacing:.02em}
-#pre .sl small{display:block;margin-top:.55em;font-family:var(--sans);font-style:normal;font-size:clamp(12px,1.5vw,14px);
-  letter-spacing:.16em;text-transform:uppercase;color:var(--p3);font-weight:700}
-#pre .dots{display:flex;justify-content:center;gap:8px;margin-bottom:var(--s4)}
-#pre .dots i{width:22px;height:2px;background:rgba(240,235,226,.18);border-radius:2px;overflow:hidden;position:relative}
-#pre .dots i::after{content:'';position:absolute;inset:0;background:var(--accent);transform:scaleX(0);transform-origin:left}
-#pre .dots i.done::after{transform:scaleX(1)}
-#pre .dots i.run::after{animation:dotrun var(--sd,3.2s) linear forwards}
-@keyframes dotrun{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-#pre .pacts{opacity:0;animation:none;transition:opacity .8s var(--e);pointer-events:none}
-#pre.ready .pacts{opacity:1;pointer-events:auto}
-#pre .skip{position:absolute;right:calc(var(--sr,0px) + 18px);bottom:calc(var(--sb) + 18px);background:none;border:0;
-  color:var(--p4);font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;cursor:pointer;padding:10px}
-#pre.ready .skip{display:none}
-@media(prefers-reduced-motion:reduce){#pre .sl{transition:none}#pre .dots i.run::after{animation:none;transform:scaleX(1)}}
+/* ═══ v3: конь 4:3, единый ядерный блок ═══ */
 
 /* конь: кадр 4:3 вместо полноэкранного квадрата, город в кадре */
 #sc1 .st{display:grid;place-items:center;align-content:center}
@@ -1113,23 +1067,6 @@ body.pre-on #hero > div.in,body.pre-on #hero .cue,body.pre-on header,body.pre-on
 }
 </style>
 
-<div id="pre">
-  <div class="pin">
-    <div class="slides" id="preSl">
-      <p class="sl">«Мужа мне, Муза, поведай…» — так начинается «Одиссея».<small>Гомер · Песнь первая · строка 1</small></p>
-      <p class="sl">Пятое слово этой строки — <span class="gk">πολύτροπος</span>.<small>буквально — «много-поворотный»</small></p>
-      <p class="sl">Его переводят двумя способами.<br>«Много повидавший» — жертва.<br>«На многое способный» — хитрец.</p>
-      <p class="sl">Один герой. Одно слово.<br>От того, как его прочесть, зависит — кто виноват.</p>
-    </div>
-    <div class="dots" id="preDots"><i></i><i></i><i></i><i></i></div>
-    <div class="pacts">
-      <button id="preGo" class="gbtn primary"><b>Войти</b><small>со звуком</small></button>
-      <button id="preMute" class="pmute">войти без звука</button>
-    </div>
-  </div>
-  <button class="skip" id="preSkip">пропустить</button>
-</div>
-
 <div id="gate" class="wait">
   <div class="in">
     <p class="geye">Перед отплытием</p>
@@ -1157,7 +1094,7 @@ body.pre-on #hero > div.in,body.pre-on #hero .cue,body.pre-on header,body.pre-on
 <!-- ═══════════ 1 · ОБЫЧНЫЙ МИР ═══════════ -->
 <section id="hero" data-stage="Обычный мир">
   <canvas id="sea" aria-hidden="true"></canvas>
-  <video id="heroV" data-src="assets/hero-60.mp4" muted loop playsinline autoplay preload="none" aria-hidden="true"></video>
+  <video id="heroV" data-src="assets/hero-60.mp4?v=5" muted loop playsinline autoplay preload="none" aria-hidden="true"></video>
   <div class="veil"></div>
   <div class="in">
     <p class="eyebrow">Путешествие по «Одиссее» · 2026</p>
@@ -2529,47 +2466,19 @@ document.addEventListener('visibilitychange',function(){
   try{ if(document.hidden){ if(thOn) AC.suspend(); } else if(thOn) AC.resume(); }catch(e){}
 });
 
-/* ═══ ПРЕАМБУЛА: слайды о пятом слове → вход ═══ */
+/* ═══ ВХОД: сразу, по умолчанию без звука (заставки нет) ═══ */
 (function(){
-  var pre=$('#pre'), gate=$('#gate'); if(!pre) return;
-  var done=false; document.body.classList.add('pre-on');
-  function enter(withSound){
-    if(done) return; done=true;
-    try{ localStorage.setItem('zz-snd',withSound?'1':'0'); }catch(e){}
-    if(withSound) cinemaOn();
-    if(window.gtag) gtag('event','intro_enter',{sound:withSound?1:0});
-    pre.classList.add('gone'); document.body.classList.remove('pre-on');
-    setTimeout(function(){ if(pre.parentNode) pre.remove(); },1200);
-    if(gate && gate.dataset.skip){
-      gate.remove(); document.body.classList.remove('locked');
-    } else if(gate){ gate.classList.remove('wait'); }
-    sndUI();
+  var gate=$('#gate');
+  if(lsG('zz-snd')===null){ try{ localStorage.setItem('zz-snd','0'); }catch(e){} }
+  if(gate && gate.dataset.skip){ gate.remove(); document.body.classList.remove('locked'); }
+  else if(gate){ gate.classList.remove('wait'); }
+  sndUI();
+  if(window.gtag) gtag('event','intro_enter',{sound:0,pre:0});
+  /* звук включал раньше — вернём при первом жесте (без жеста браузер не даст) */
+  if(lsG('zz-snd')==='1'){
+    var once=function(){ if(!thOn) cinemaOn(); };
+    ['pointerdown','keydown'].forEach(function(ev){ addEventListener(ev,once,{once:true,passive:true}); });
   }
-  var b1=$('#preGo'), b2=$('#preMute');
-  if(b1) b1.addEventListener('click',function(e){ e.stopPropagation(); enter(true); });
-  if(b2) b2.addEventListener('click',function(e){ e.stopPropagation(); enter(false); });
-  var sls=$$('#preSl .sl'), dots=$$('#preDots i'), cur=-1, tm=null, DUR=[3300,3600,4300,3600];
-  function show(k){
-    if(k>=sls.length){ ready(); return; }
-    zzEv('pre_slide',{index:k+1});
-    sls.forEach(function(s,j){ s.classList.toggle('on',j===k); s.classList.toggle('out',j<k); });
-    dots.forEach(function(d,j){ d.classList.toggle('done',j<k); d.classList.toggle('run',j===k); if(j===k) d.style.setProperty('--sd',DUR[k]+'ms'); });
-    cur=k; clearTimeout(tm); tm=setTimeout(function(){ show(k+1); },DUR[k]);
-  }
-  function ready(via){
-    clearTimeout(tm); if(pre.classList.contains('ready')) return;
-    zzEv('pre_done',{via:via||'auto',slides_seen:cur+1});
-    sls.forEach(function(s,j){ s.classList.toggle('on',j===sls.length-1); s.classList.remove('out'); });
-    dots.forEach(function(d){ d.classList.add('done'); d.classList.remove('run'); });
-    pre.classList.add('ready');
-  }
-  pre.addEventListener('click',function(e){
-    if(e.target.closest('.pacts')) return;
-    if(pre.classList.contains('ready')) return;
-    if(cur<sls.length-1){ zzEv('pre_tap',{from:cur+1}); show(cur+1); } else ready('tap');
-  });
-  var sk=$('#preSkip'); if(sk) sk.addEventListener('click',function(e){ e.stopPropagation(); zzEv('pre_skip',{at:cur+1}); ready('skip'); });
-  if(RM) ready(); else setTimeout(function(){ show(0); },400);
 })();
 
 /* ═══ ПРОГРЕСС, ШАПКА, РЕЛЬС ═══ */
